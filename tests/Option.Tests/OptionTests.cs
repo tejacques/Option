@@ -92,10 +92,19 @@ namespace Tests
                 matchedOne = false;
             };
 
+            var staticMatcher = Option<int>.PatternMatch();
+
             var matcher = optionSome.Match()
                 .None(() => matchedNone = true)
                 .Some(1, (x) => matchedOne = true)
                 .Some((x) => matchedSome = true);
+
+            staticMatcher.Result();
+            Assert.IsFalse(matchedNone);
+            Assert.IsFalse(matchedSome);
+            Assert.IsFalse(matchedOne);
+
+            resetMatchVars();
 
             matcher.Result();
             Assert.IsFalse(matchedNone);
@@ -138,11 +147,14 @@ namespace Tests
             Option<int> optionSome = 10;
             Option<int> optionOne = 1;
 
-            var matcher = optionSome.Match<int>()
+            var staticMatcher = Option<int>.PatternMatch<int>();
+
+            var matcher =  optionSome.Match<int>()
                 .None(() => 0)
                 .Some((x) => 1)
                 .Some(1, (x) => 2);
 
+            Assert.AreEqual(default(int), staticMatcher.Result());
             Assert.AreEqual(1, matcher.Result());
             Assert.AreEqual(0, matcher.Result(optionNone));
             Assert.AreEqual(1, matcher.Result(optionSome));
@@ -185,6 +197,7 @@ namespace Tests
 
             Assert.IsTrue(o.Equals((object)oSame));
             Assert.IsFalse(o.Equals(oDifferent));
+            Assert.IsFalse(o.Equals(null));
         }
 
         [Test]

@@ -116,7 +116,11 @@ namespace System.Option
         /// <param name="option">The option to match on.</param>
         public void Result(Option<T> option)
         {
-            if (option.HasValue)
+            if (null == option)
+            {
+                // Do nothing
+            }
+            else if (option.HasValue)
             {
                 T value = option.Value;
                 if (this._matchedValues.ContainsKey(value))
@@ -296,7 +300,11 @@ namespace System.Option
         {
             TOut result = defaultValue;
 
-            if (option.HasValue)
+            if (null == option)
+            {
+                // Do nothing
+            }
+            else if (option.HasValue)
             {
                 TIn value = option.Value;
                 if (this._matchedValues.ContainsKey(value))

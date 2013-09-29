@@ -112,6 +112,17 @@ namespace System.Option
         }
 
         /// <summary>
+        /// Creates and returns an OptionPatternMatcher&lt;T&gt;.
+        /// </summary>
+        /// <returns>
+        /// An OptionPatternMatcher&lt;T&gt;.
+        /// </returns>
+        public static OptionPatternMatcher<T> PatternMatch()
+        {
+            return new OptionPatternMatcher<T>();
+        }
+
+        /// <summary>
         /// Creates and returns an OptionPatternMatcher&lt;T,TOut&gt;
         /// made from the current option.
         /// </summary>
@@ -124,6 +135,20 @@ namespace System.Option
         public OptionPatternMatcher<T, TOut> Match<TOut>()
         {
             return new OptionPatternMatcher<T, TOut>(this);
+        }
+
+        /// <summary>
+        /// Creates and returns an OptionPatternMatcher&lt;T,TOut&gt;.
+        /// </summary>
+        /// <typeparam name="TOut">
+        /// The type which the OptionPatternMatcher&lt;T,TOut&gt; will return.
+        /// </typeparam>
+        /// <returns>
+        /// An OptionPatternMatcher&lt;T,TOut&gt;.
+        /// </returns>
+        public static OptionPatternMatcher<T, TOut> PatternMatch<TOut>()
+        {
+            return new OptionPatternMatcher<T, TOut>();
         }
 
         #endregion
@@ -182,6 +207,14 @@ namespace System.Option
         /// </returns>
         public static bool operator ==(Option<T> lhs, Option<T> rhs)
         {
+            if (null == (object)lhs)
+            {
+                if (null == (object)rhs)
+                {
+                    return true;
+                }
+                return false;
+            }
             return lhs.Equals(rhs);
         }
 
@@ -217,7 +250,8 @@ namespace System.Option
         /// </returns>
         public bool Equals(Option<T> other)
         {
-            if (this.HasValue != other.HasValue)
+            if (null == (object)other
+                || this.HasValue != other.HasValue)
             {
                 return false;
             }
