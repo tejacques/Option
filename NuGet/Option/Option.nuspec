@@ -3,7 +3,7 @@
   <metadata>
     <id>Option</id>
     <version>1.0.0</version>
-    <title>Deque</title>
+    <title>Option</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
     <licenseUrl>https://github.com/tejacques/Option/blob/master/LICENSE</licenseUrl>
@@ -19,8 +19,11 @@
     <releaseNotes>
         Version Release Notes:
 
+        Version 1.0.1:
+        - Include documentation.
+
         Version 1.0.0:
-         - Adds the Option type to Options 
+         - Adds the Option type to the System.Option namespace.
      </releaseNotes>
     <dependencies>
     </dependencies>
