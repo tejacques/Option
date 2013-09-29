@@ -11,19 +11,26 @@ namespace System.Option
     /// <typeparam name="T">The type of the option.</typeparam>
     public class OptionPatternMatcher<T>
     {
-        private readonly Option<T> _option;
+        private Option<T> _option;
         private readonly Dictionary<T, Action<T>> _matchedValues;
         private Action<T> _matchedSome;
         private Action _matchedNone;
 
         /// <summary>
-        /// Creates a new OptionMatternMatcher with the supplied option.
+        /// Creates a new OptionPatternMatcher.
+        /// </summary>
+        public OptionPatternMatcher()
+        {
+            this._matchedValues = new Dictionary<T, Action<T>>();
+        }
+
+        /// <summary>
+        /// Creates a new OptionPatternMatcher with the supplied option.
         /// </summary>
         /// <param name="option">The option to match on.</param>
-        internal OptionPatternMatcher(Option<T> option)
+        internal OptionPatternMatcher(Option<T> option) : this()
         {
             this._option = option;
-            this._matchedValues = new Dictionary<T, Action<T>>();
         }
 
         #region Fluent API
@@ -100,9 +107,18 @@ namespace System.Option
         /// </summary>
         public void Result()
         {
-            if (_option.HasValue)
+            Result(this._option);
+        }
+
+        /// <summary>
+        /// Runs the action whose pattern matches the supplied option.
+        /// </summary>
+        /// <param name="option">The option to match on.</param>
+        public void Result(Option<T> option)
+        {
+            if (option.HasValue)
             {
-                T value = this._option.Value;
+                T value = option.Value;
                 if (this._matchedValues.ContainsKey(value))
                 {
                     this._matchedValues[value](value);
@@ -137,10 +153,17 @@ namespace System.Option
         private Func<TIn,TOut> _matchedSome;
         private Func<TOut> _matchedNone;
 
-        internal OptionPatternMatcher(Option<TIn> option)
+        /// <summary>
+        /// Creates a new OptionPatternMatcher.
+        /// </summary>
+        public OptionPatternMatcher()
+        {
+            this._matchedValues = new Dictionary<TIn, Func<TIn, TOut>>();
+        }
+
+        internal OptionPatternMatcher(Option<TIn> option) : this()
         {
             this._option = option;
-            this._matchedValues = new Dictionary<TIn, Func<TIn, TOut>>();
         }
 
         #region Fluent API
@@ -221,29 +244,7 @@ namespace System.Option
         /// </summary>
         public TOut Result()
         {
-            TOut result = default(TOut);
-
-            if (_option.HasValue)
-            {
-                TIn value = this._option.Value;
-                if (this._matchedValues.ContainsKey(value))
-                {
-                    result = this._matchedValues[value](value);
-                }
-                else if (null != this._matchedSome)
-                {
-                    result = this._matchedSome(value);
-                }
-            }
-            else
-            {
-                if (null != this._matchedNone)
-                {
-                    result = this._matchedNone();
-                }
-            }
-
-            return result;
+            return Result(default(TOut));
         }
 
         /// <summary>
@@ -260,11 +261,44 @@ namespace System.Option
         /// </returns>
         public TOut Result(TOut defaultValue)
         {
+            return Result(this._option, defaultValue);
+        }
+
+        /// <summary>
+        /// Runs the func whose pattern matches the option
+        /// and returns the result or the defaultValue if 
+        /// there was no match.
+        /// </summary>
+        /// <param name="option">The option to match on.</param>
+        /// <returns>
+        /// The result of running the func matching the option's value, or
+        /// defaultValue if there was no match.
+        /// </returns>
+        public TOut Result(Option<TIn> option)
+        {
+            return Result(option, default(TOut));
+        }
+
+        /// <summary>
+        /// Runs the func whose pattern matches the option
+        /// and returns the result or the defaultValue if 
+        /// there was no match.
+        /// </summary>
+        /// <param name="option">The option to match on.</param>
+        /// <param name="defaultValue">
+        /// The default value to return if there was no match.
+        /// </param>
+        /// <returns>
+        /// The result of running the func matching the option's value, or
+        /// defaultValue if there was no match.
+        /// </returns>
+        public TOut Result(Option<TIn> option, TOut defaultValue)
+        {
             TOut result = defaultValue;
 
-            if (_option.HasValue)
+            if (option.HasValue)
             {
-                TIn value = this._option.Value;
+                TIn value = option.Value;
                 if (this._matchedValues.ContainsKey(value))
                 {
                     result = this._matchedValues[value](value);

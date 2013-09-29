@@ -42,8 +42,6 @@ namespace Tests
             object o = new object();
             objectOption = o;
             object o2 = objectOption;
-
-
         }
 
         [Test]
@@ -74,6 +72,142 @@ namespace Tests
             Assert.IsTrue(objectOption.Equals(optionEqual));
             Assert.IsFalse(objectOption.Equals(optionNotEqual));
             Assert.IsFalse(objectOption.Equals(Option<object>.None));
+        }
+
+        [Test]
+        public void TestOptionPatternMatcherT()
+        {
+            Option<int> optionNone = Option.None;
+            Option<int> optionSome = 10;
+            Option<int> optionOne = 1;
+
+            bool matchedNone = false;
+            bool matchedSome = false;
+            bool matchedOne = false;
+
+            Action resetMatchVars = () =>
+            {
+                matchedNone = false;
+                matchedSome = false;
+                matchedOne = false;
+            };
+
+            var matcher = optionSome.Match()
+                .None(() => matchedNone = true)
+                .Some(1, (x) => matchedOne = true)
+                .Some((x) => matchedSome = true);
+
+            matcher.Result();
+            Assert.IsFalse(matchedNone);
+            Assert.IsTrue(matchedSome);
+            Assert.IsFalse(matchedOne);
+
+            resetMatchVars();
+
+            matcher.Result(optionNone);
+            Assert.IsTrue(matchedNone);
+            Assert.IsFalse(matchedSome);
+            Assert.IsFalse(matchedOne);
+
+            resetMatchVars();
+
+            matcher.Result(optionSome);
+            Assert.IsFalse(matchedNone);
+            Assert.IsTrue(matchedSome);
+            Assert.IsFalse(matchedOne);
+
+            resetMatchVars();
+
+            matcher.Result(optionOne);
+            Assert.IsFalse(matchedNone);
+            Assert.IsFalse(matchedSome);
+            Assert.IsTrue(matchedOne);
+
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.None(() => { }));
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.Some((x) => { }));
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.Some(1, (x) => { }));
+        }
+
+        [Test]
+        public void TestOptionPatternMatcherTInTOut()
+        {
+            Option<int> optionNone = Option.None;
+            Option<int> optionSome = 10;
+            Option<int> optionOne = 1;
+
+            var matcher = optionSome.Match<int>()
+                .None(() => 0)
+                .Some((x) => 1)
+                .Some(1, (x) => 2);
+
+            Assert.AreEqual(1, matcher.Result());
+            Assert.AreEqual(0, matcher.Result(optionNone));
+            Assert.AreEqual(1, matcher.Result(optionSome));
+            Assert.AreEqual(2, matcher.Result(optionOne));
+
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.None(() => 0));
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.Some((x) => 1));
+            Assert.Throws(typeof(InvalidOperationException),
+                () => matcher.Some(1, (x) => 2));
+        }
+
+        [Test]
+        public void TestImplicitOperators()
+        {
+            Option<int?> o1 = 1;                        // Some<int?>(1)
+            Option<int?> o2 = Option.Some<int?>(null);  // Some<int?>(null)
+            Option<int?> o3 = (int?)null;               // None<int?>
+
+            Assert.AreEqual(true, o1.HasValue);
+            Assert.AreEqual(true, o2.HasValue);
+            Assert.AreEqual(false, o3.HasValue);
+
+            int? i1 = o1;
+            int? i2 = o2;
+
+            Assert.Throws(typeof(InvalidOperationException), () =>
+            {
+                int? i3 = o3;
+            });
+        }
+
+        [Test]
+        public void TestEquals()
+        {
+            Option<int> o = 1;
+            Option<int> oSame = 1;
+            Option<bool> oDifferent = false;
+
+            Assert.IsTrue(o.Equals((object)oSame));
+            Assert.IsFalse(o.Equals(oDifferent));
+        }
+
+        [Test]
+        public void TestEqualsOperators()
+        {
+            Option<int> o = 1;
+            Option<int> oSame = 1;
+            Option<int> oDifferent = 2;
+
+            Assert.IsTrue(o == oSame);
+            Assert.IsFalse(o == oDifferent);
+            Assert.IsTrue(o != oDifferent);
+        }
+
+        [Test]
+        public void TestHashCode()
+        {
+            int i = 1;
+            Option<int> o1 = i;
+            Option<int> o2 = Option<int>.None;
+
+            Assert.AreEqual(i.GetHashCode(), o1.GetHashCode());
+            Assert.AreEqual(0, o2.GetHashCode());
         }
     }
 }
