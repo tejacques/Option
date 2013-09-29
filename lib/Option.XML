@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Option</name>
+    </assembly>
+    <members>
+        <member name="T:System.Option.Option`1">
+            <summary>
+            A generic Option type that allows for an explicit difference
+            between an intentionally set value, and a default value of None.
+            </summary>
+            <typeparam name="T">The type to create an option for.</typeparam>
+        </member>
+        <member name="M:System.Option.Option`1.TryGetValue(`0@)">
+            <summary>
+            Tries to get the value of an option and place
+            it in the referenced result.
+            </summary>
+            <param name="result">
+            The location to store the option's value.
+            </param>
+            <returns>true if the option has a value, false otherwise.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(System.Option.Option)~System.Option.Option{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(`0)~System.Option.Option{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(System.Option.Option{`0})~`0" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Equality(System.Option.Option{`0},System.Option.Option{`0})" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Inequality(System.Option.Option{`0},System.Option.Option{`0})" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.Equals(System.Option.Option{`0})" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.Equals(System.Object)" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.GetHashCode" -->
+        <member name="P:System.Option.Option`1.None">
+            <summary>
+            The Option indication there is no value.
+            </summary>
+        </member>
+        <member name="P:System.Option.Option`1.HasValue">
+            <summary>
+            True if the option has a value, false otherwise.
+            </summary>
+        </member>
+        <member name="P:System.Option.Option`1.Value">
+            <summary>
+            Gets the value of the option
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the option does not have a value.
+            </exception>
+        </member>
+        <member name="P:System.Option.Option`1.ValueOrDefault">
+            <summary>
+            Gets the value of the option if present,
+            and the default value otherwise.
+            </summary>
+        </member>
+        <member name="T:System.Option.Option">
+            <summary>
+            An Option type that allows the use of Option.None
+            as well as the creation of Options.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Option.Option.From``1(``0)" -->
+        <member name="P:System.Option.Option.None">
+            <summary>
+            The default Option type specifying there is no value.
+            </summary>
+        </member>
+        <member name="T:System.Option.OptionExtensions">
+            <summary>
+            Excention methods for working with Options.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Option.OptionExtensions.ToOption``1(``0)" -->
+    </members>
+</doc>
