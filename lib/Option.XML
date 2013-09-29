@@ -11,6 +11,16 @@
             </summary>
             <typeparam name="T">The type to create an option for.</typeparam>
         </member>
+        <member name="F:System.Option.Option`1._value">
+            <summary>
+            The value of the option.
+            </summary>
+        </member>
+        <member name="F:System.Option.Option`1._hasValue">
+            <summary>
+            The bool indicating whether the option has a value.
+            </summary>
+        </member>
         <member name="M:System.Option.Option`1.TryGetValue(`0@)">
             <summary>
             Tries to get the value of an option and place
@@ -21,14 +31,134 @@
             </param>
             <returns>true if the option has a value, false otherwise.</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(System.Option.Option)~System.Option.Option{`0}" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(`0)~System.Option.Option{`0}" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Implicit(System.Option.Option{`0})~`0" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Equality(System.Option.Option{`0},System.Option.Option{`0})" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.op_Inequality(System.Option.Option{`0},System.Option.Option{`0})" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.Equals(System.Option.Option{`0})" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.Equals(System.Object)" -->
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option`1.GetHashCode" -->
+        <member name="M:System.Option.Option`1.Match">
+            <summary>
+            Creates and returns an OptionPatternMatcher&lt;T&gt;
+            made from the current option.
+            </summary>
+            <returns>
+            An OptionPatternMatcher&lt;T&gt; made from the current option.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.PatternMatch">
+            <summary>
+            Creates and returns an OptionPatternMatcher&lt;T&gt;.
+            </summary>
+            <returns>
+            An OptionPatternMatcher&lt;T&gt;.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.Match``1">
+            <summary>
+            Creates and returns an OptionPatternMatcher&lt;T,TOut&gt;
+            made from the current option.
+            </summary>
+            <typeparam name="TOut">
+            The type which the OptionPatternMatcher&lt;T,TOut&gt; will return.
+            </typeparam>
+            <returns>
+            An OptionPatternMatcher&lt;T,TOut&gt; made from the current option.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.PatternMatch``1">
+            <summary>
+            Creates and returns an OptionPatternMatcher&lt;T,TOut&gt;.
+            </summary>
+            <typeparam name="TOut">
+            The type which the OptionPatternMatcher&lt;T,TOut&gt; will return.
+            </typeparam>
+            <returns>
+            An OptionPatternMatcher&lt;T,TOut&gt;.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.op_Implicit(System.Option.Option)~System.Option.Option{`0}">
+            <summary>
+            Implicitly converts an Option to an Option&lt;T&gt;.
+            </summary>
+            <param name="option">The option to convert.</param>
+            <returns>Option&lt;T&gt;.None</returns>
+        </member>
+        <member name="M:System.Option.Option`1.op_Implicit(`0)~System.Option.Option{`0}">
+            <summary>
+            Implicitly converts a value to an Option&lt;T&gt;.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>
+            Option&lt;T&gt;.None if value is null, otherwise an
+            Option&lt;T&gt; whose value is set to <paramref name="value"/>.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.op_Implicit(System.Option.Option{`0})~`0">
+            <summary>
+            Implicitly converts an Option&lt;T&gt; to a T.
+            </summary>
+            <param name="option">The option to convert.</param>
+            <returns>
+            Option&lt;T&gt;.Value, which will throw InvalidOperationException
+            if the option does not have a value.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.op_Equality(System.Option.Option{`0},System.Option.Option{`0})">
+            <summary>
+            Comapares two options for equality.
+            </summary>
+            <param name="lhs">The option on the left hand side.</param>
+            <param name="rhs">The option on the right hand side.</param>
+            <returns>
+            true if the options' values are equal
+            or both options are Option&lt;T&gt;.None,
+            and false if the options' values are not
+            equal or only one option is Option&lt;T&gt;.None
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.op_Inequality(System.Option.Option{`0},System.Option.Option{`0})">
+            <summary>
+            Comapares two options for inequality.
+            </summary>
+            <param name="lhs">The option on the left hand side.</param>
+            <param name="rhs">The option on the right hand side.</param>
+            <returns>
+            true if the options' values are not
+            equal or only one option is Option&lt;T&gt;.None,
+            and false if the options' values are equal
+            or both options are Option&lt;T&gt;.None.
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.Equals(System.Option.Option{`0})">
+            <summary>
+            Compares the option to another option for equality.
+            </summary>
+            <param name="other">The option to compare to.</param>
+            <returns>
+            true if the options' values are equal
+            or both options are Option&lt;T&gt;.None,
+            and false if the options' values are not
+            equal or only one option is Option&lt;T&gt;.None
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.Equals(System.Object)">
+            <summary>
+            Compares the option to another object for equality.
+            </summary>
+            <param name="other">The object to compare to.</param>
+            <returns>
+            true if the object is an Option&lt;T&gt; and
+            the options' values are equal
+            or both options are Option&lt;T&gt;.None,
+            and false if the object is not an Option&lt;T&gt; or
+            the options' values are not equal
+            or only one option is Option&lt;T&gt;.None
+            </returns>
+        </member>
+        <member name="M:System.Option.Option`1.GetHashCode">
+            <summary>
+            Gets the HashCode for the Option&lt;T&gt;.
+            </summary>
+            <returns>
+            0 if the Option is Option.None, otherwise
+            returns the hash code of the value.
+            </returns>
+        </member>
         <member name="P:System.Option.Option`1.None">
             <summary>
             The Option indication there is no value.
@@ -53,23 +183,185 @@
             and the default value otherwise.
             </summary>
         </member>
+        <member name="T:System.Option.Some`1">
+            <summary>
+            A subclass of Option indicating that there is be a value.
+            </summary>
+            <typeparam name="T">The type of option.</typeparam>
+        </member>
+        <member name="T:System.Option.None`1">
+            <summary>
+            A subclass of Option indicating that there is no value.
+            </summary>
+            <typeparam name="T">The type of option.</typeparam>
+        </member>
         <member name="T:System.Option.Option">
             <summary>
             An Option type that allows the use of Option.None
             as well as the creation of Options.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:System.Option.Option.From``1(``0)" -->
+        <member name="M:System.Option.Option.Some``1(``0)">
+            <summary>
+            Creates a new option from a specified value.
+            </summary>
+            <typeparam name="T">The type to create an option for.</typeparam>
+            <param name="value">The value to create an option for.</param>
+            <returns>
+            A new Option&lt;T&gt; whose value is
+            set to <paramref name="value"/>.
+            </returns>
+        </member>
         <member name="P:System.Option.Option.None">
             <summary>
             The default Option type specifying there is no value.
             </summary>
         </member>
-        <member name="T:System.Option.OptionExtensions">
+        <member name="T:System.Option.OptionPatternMatcher`1">
             <summary>
-            Excention methods for working with Options.
+            A class to help with pattern matching on Option types.
+            </summary>
+            <typeparam name="T">The type of the option.</typeparam>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.#ctor">
+            <summary>
+            Creates a new OptionPatternMatcher.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:System.Option.OptionExtensions.ToOption``1(``0)" -->
+        <member name="M:System.Option.OptionPatternMatcher`1.#ctor(System.Option.Option{`0})">
+            <summary>
+            Creates a new OptionPatternMatcher with the supplied option.
+            </summary>
+            <param name="option">The option to match on.</param>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.Some(System.Action{`0})">
+            <summary>
+            Sets the action to run when the option matches Some&lt;T&gt;.
+            </summary>
+            <param name="action">
+            The action to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;T&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.Some(`0,System.Action)">
+            <summary>
+            Sets the action to run when the option matches the provided value.
+            </summary>
+            <param name="value">The value to pattern match on.</param>
+            <param name="action">
+            The action to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;T&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.None(System.Action)">
+            <summary>
+            Sets the action to run when the option matches None&lt;T&gt;.
+            </summary>
+            <param name="action">
+            The action to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;T&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.Result">
+            <summary>
+            Runs the action whose pattern matches the option.
+            </summary>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`1.Result(System.Option.Option{`0})">
+            <summary>
+            Runs the action whose pattern matches the supplied option.
+            </summary>
+            <param name="option">The option to match on.</param>
+        </member>
+        <member name="T:System.Option.OptionPatternMatcher`2">
+            <summary>
+            A class to help with pattern matching on Option types.
+            </summary>
+            <typeparam name="TIn">The type of option.</typeparam>
+            <typeparam name="TOut">
+            The result type of running the pattern matcher on the option.
+            </typeparam>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.#ctor">
+            <summary>
+            Creates a new OptionPatternMatcher.
+            </summary>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Some(System.Func{`0,`1})">
+            <summary>
+            Sets the func to run when the option matches Some&lt;T&gt;.
+            </summary>
+            <param name="func">
+            The func to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;TIn,TOut&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Some(`0,System.Func{`1})">
+            <summary>
+            Sets the func to run when the option matches Some&lt;T&gt;.
+            </summary>
+            <param name="value">The value to pattern match on.</param>
+            <param name="func">
+            The func to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;TIn,TOut&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.None(System.Func{`1})">
+            <summary>
+            Sets the func to run when the option matches None&lt;T&gt;.
+            </summary>
+            <param name="func">
+            The func to run if the pattern matches.
+            </param>
+            <returns>The current OptionPatternMatcher&lt;TIn,TOut&gt;</returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Result">
+            <summary>
+            Runs the func whose pattern matches the option
+            and returns the result or default(TOut) if there
+            was no match.
+            </summary>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Result(`1)">
+            <summary>
+            Runs the func whose pattern matches the option
+            and returns the result or the defaultValue if 
+            there was no match.
+            </summary>
+            <param name="defaultValue">
+            The default value to return if there was no match.
+            </param>
+            <returns>
+            The result of running the func matching the option's value, or
+            defaultValue if there was no match.
+            </returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Result(System.Option.Option{`0})">
+            <summary>
+            Runs the func whose pattern matches the option
+            and returns the result or the defaultValue if 
+            there was no match.
+            </summary>
+            <param name="option">The option to match on.</param>
+            <returns>
+            The result of running the func matching the option's value, or
+            defaultValue if there was no match.
+            </returns>
+        </member>
+        <member name="M:System.Option.OptionPatternMatcher`2.Result(System.Option.Option{`0},`1)">
+            <summary>
+            Runs the func whose pattern matches the option
+            and returns the result or the defaultValue if 
+            there was no match.
+            </summary>
+            <param name="option">The option to match on.</param>
+            <param name="defaultValue">
+            The default value to return if there was no match.
+            </param>
+            <returns>
+            The result of running the func matching the option's value, or
+            defaultValue if there was no match.
+            </returns>
+        </member>
     </members>
 </doc>
