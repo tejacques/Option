@@ -12,7 +12,7 @@ namespace System.Option
     public class OptionPatternMatcher<T>
     {
         private Option<T> _option;
-        private readonly Dictionary<T, Action<T>> _matchedValues;
+        private readonly Dictionary<T, Action> _matchedValues;
         private Action<T> _matchedSome;
         private Action _matchedNone;
 
@@ -21,7 +21,7 @@ namespace System.Option
         /// </summary>
         public OptionPatternMatcher()
         {
-            this._matchedValues = new Dictionary<T, Action<T>>();
+            this._matchedValues = new Dictionary<T, Action>();
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace System.Option
         /// The action to run if the pattern matches.
         /// </param>
         /// <returns>The current OptionPatternMatcher&lt;T&gt;</returns>
-        public OptionPatternMatcher<T> Some(T value, Action<T> action)
+        public OptionPatternMatcher<T> Some(T value, Action action)
         {
             if (!this._matchedValues.ContainsKey(value))
             {
@@ -125,7 +125,7 @@ namespace System.Option
                 T value = option.Value;
                 if (this._matchedValues.ContainsKey(value))
                 {
-                    this._matchedValues[value](value);
+                    this._matchedValues[value]();
                 }
                 else if (null != this._matchedSome)
                 {
@@ -153,7 +153,7 @@ namespace System.Option
     public class OptionPatternMatcher<TIn, TOut>
     {
         private readonly Option<TIn> _option;
-        private readonly Dictionary<TIn, Func<TIn, TOut>> _matchedValues;
+        private readonly Dictionary<TIn, Func<TOut>> _matchedValues;
         private Func<TIn,TOut> _matchedSome;
         private Func<TOut> _matchedNone;
 
@@ -162,7 +162,7 @@ namespace System.Option
         /// </summary>
         public OptionPatternMatcher()
         {
-            this._matchedValues = new Dictionary<TIn, Func<TIn, TOut>>();
+            this._matchedValues = new Dictionary<TIn, Func<TOut>>();
         }
 
         internal OptionPatternMatcher(Option<TIn> option) : this()
@@ -204,7 +204,7 @@ namespace System.Option
         /// <returns>The current OptionPatternMatcher&lt;TIn,TOut&gt;</returns>
         public OptionPatternMatcher<TIn, TOut> Some(
             TIn value,
-            Func<TIn, TOut> func)
+            Func<TOut> func)
         {
             if (!this._matchedValues.ContainsKey(value))
             {
@@ -309,7 +309,7 @@ namespace System.Option
                 TIn value = option.Value;
                 if (this._matchedValues.ContainsKey(value))
                 {
-                    result = this._matchedValues[value](value);
+                    result = this._matchedValues[value]();
                 }
                 else if (null != this._matchedSome)
                 {

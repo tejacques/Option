@@ -363,24 +363,4 @@ namespace System.Option
             get { return _none; }
         }
     }
-
-    /// <summary>
-    /// Excention methods for working with Options.
-    /// </summary>
-    public static class OptionExtensions
-    {
-        /// <summary>
-        /// Creates a new option from a value.
-        /// </summary>
-        /// <typeparam name="T">The type to create an option for.</typeparam>
-        /// <param name="value">The value to create an option for.</param>
-        /// <returns>
-        /// A new Option&lt;T&gt; whose value is
-        /// set to <paramref name="value"/>.
-        /// </returns>
-        public static Option<T> ToOption<T>(this T value)
-        {
-            return Option.Some(value);
-        }
-    }
 }

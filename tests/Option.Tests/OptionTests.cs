@@ -15,7 +15,7 @@ namespace Tests
         public void TestCreate()
         {
             string s = "string";
-            Option<string> option = s.ToOption();
+            Option<string> option = s;
 
             Assert.IsTrue(option.HasValue);
             Assert.AreEqual(s, option.Value);
@@ -68,7 +68,7 @@ namespace Tests
             Assert.AreEqual(o, objectOption.Value);
 
             var optionEqual = objectOption;
-            var optionNotEqual = (new object()).ToOption();
+            var optionNotEqual = new object();
             Assert.IsTrue(objectOption.Equals(optionEqual));
             Assert.IsFalse(objectOption.Equals(optionNotEqual));
             Assert.IsFalse(objectOption.Equals(Option<object>.None));
@@ -96,7 +96,7 @@ namespace Tests
 
             var matcher = optionSome.Match()
                 .None(() => matchedNone = true)
-                .Some(1, (x) => matchedOne = true)
+                .Some(1, () => matchedOne = true)
                 .Some((x) => matchedSome = true);
 
             staticMatcher.Result();
@@ -137,7 +137,7 @@ namespace Tests
             Assert.Throws(typeof(InvalidOperationException),
                 () => matcher.Some((x) => { }));
             Assert.Throws(typeof(InvalidOperationException),
-                () => matcher.Some(1, (x) => { }));
+                () => matcher.Some(1, () => { }));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Tests
             var matcher =  optionSome.Match<int>()
                 .None(() => 0)
                 .Some((x) => 1)
-                .Some(1, (x) => 2);
+                .Some(1, () => 2);
 
             Assert.AreEqual(default(int), staticMatcher.Result());
             Assert.AreEqual(1, matcher.Result());
@@ -165,7 +165,7 @@ namespace Tests
             Assert.Throws(typeof(InvalidOperationException),
                 () => matcher.Some((x) => 1));
             Assert.Throws(typeof(InvalidOperationException),
-                () => matcher.Some(1, (x) => 2));
+                () => matcher.Some(1, () => 2));
         }
 
         [Test]
