@@ -25,7 +25,7 @@ namespace Tests
             Assert.IsFalse(objectOption.HasValue);
             Assert.IsTrue(Option.None == objectOption);
 
-            Option<object> nullOption = Option.From<object>(null);
+            Option<object> nullOption = Option.Some<object>(null);
 
             Assert.IsTrue(nullOption.HasValue);
             Assert.AreEqual(null, nullOption.Value);

@@ -11,17 +11,24 @@ namespace System.Option
     /// between an intentionally set value, and a default value of None.
     /// </summary>
     /// <typeparam name="T">The type to create an option for.</typeparam>
-    public struct Option<T> : IEquatable<Option<T>>
+    public class Option<T> : IEquatable<Option<T>>
     {
-        private readonly T _value;
-        private readonly bool _hasValue;
+        /// <summary>
+        /// The value of the option.
+        /// </summary>
+        protected readonly T _value;
 
-        private static Option<T> _none = new Option<T>();
+        /// <summary>
+        /// The bool indicating whether the option has a value.
+        /// </summary>
+        protected readonly bool _hasValue;
+
+        private static None<T> _none = new None<T>();
 
         /// <summary>
         /// The Option indication there is no value.
         /// </summary>
-        public static Option<T> None
+        public static None<T> None
         {
             get { return _none; }
         }
@@ -79,45 +86,82 @@ namespace System.Option
             return this.HasValue;
         }
 
+        internal Option()
+        {
+            _hasValue = false;
+        }
+
         internal Option(T value)
         {
             _hasValue = true;
             _value = value;
         }
 
+        #region Pattern Matching
+
+        /// <summary>
+        /// Creates and returns an OptionPatternMatcher&lt;T&gt;
+        /// made from the current option.
+        /// </summary>
+        /// <returns>
+        /// An OptionPatternMatcher&lt;T&gt; made from the current option.
+        /// </returns>
+        public OptionPatternMatcher<T> Match()
+        {
+            return new OptionPatternMatcher<T>(this);
+        }
+
+        /// <summary>
+        /// Creates and returns an OptionPatternMatcher&lt;T,TOut&gt;
+        /// made from the current option.
+        /// </summary>
+        /// <typeparam name="TOut">
+        /// The type which the OptionPatternMatcher&lt;T,TOut&gt; will return.
+        /// </typeparam>
+        /// <returns>
+        /// An OptionPatternMatcher&lt;T,TOut&gt; made from the current option.
+        /// </returns>
+        public OptionPatternMatcher<T, TOut> Match<TOut>()
+        {
+            return new OptionPatternMatcher<T, TOut>(this);
+        }
+
+        #endregion
+
+
         #region Operators
 
         /// <summary>
-        /// Implicitely converts an Option to and Option<T>.
+        /// Implicitly converts an Option to an Option&lt;T&gt;.
         /// </summary>
         /// <param name="option">The option to convert.</param>
-        /// <returns>Option<T>.None</returns>
+        /// <returns>Option&lt;T&gt;.None</returns>
         public static implicit operator Option<T>(Option option)
         {
             return Option<T>.None;
         }
 
         /// <summary>
-        /// Implicitely converts a value to an Option<T>.
+        /// Implicitly converts a value to an Option&lt;T&gt;.
         /// </summary>
         /// <param name="value">The value to convert.</param>
         /// <returns>
-        /// Option<T>.None if value is null, otherwise and Option<T> whose 
-        /// value is set to <paramref name="value"/>.
+        /// Option&lt;T&gt;.None if value is null, otherwise an
+        /// Option&lt;T&gt; whose value is set to <paramref name="value"/>.
         /// </returns>
         public static implicit operator Option<T>(T value)
         {
             return null == value
-                ? Option.None
-                : new Option<T>(value);
+                ? (Option<T>)Option<T>.None
+                : new Some<T>(value);
         }
 
         /// <summary>
-        /// Implicitely converts an Option<T> to a T.
+        /// Implicitly converts an Option&lt;T&gt; to a T.
         /// </summary>
         /// <param name="option">The option to convert.</param>
         /// <returns>
-        /// Option<T>.Value, which will throw InvalidOperationException
+        /// Option&lt;T&gt;.Value, which will throw InvalidOperationException
         /// if the option does not have a value.
         /// </returns>
         public static implicit operator T(Option<T> option)
@@ -132,9 +176,9 @@ namespace System.Option
         /// <param name="rhs">The option on the right hand side.</param>
         /// <returns>
         /// true if the options' values are equal
-        /// or both options are Option<T>.None,
+        /// or both options are Option&lt;T&gt;.None,
         /// and false if the options' values are not
-        /// equal or only one option is Option<T>.None
+        /// equal or only one option is Option&lt;T&gt;.None
         /// </returns>
         public static bool operator ==(Option<T> lhs, Option<T> rhs)
         {
@@ -148,9 +192,9 @@ namespace System.Option
         /// <param name="rhs">The option on the right hand side.</param>
         /// <returns>
         /// true if the options' values are not
-        /// equal or only one option is Option<T>.None,
+        /// equal or only one option is Option&lt;T&gt;.None,
         /// and false if the options' values are equal
-        /// or both options are Option<T>.None.
+        /// or both options are Option&lt;T&gt;.None.
         /// </returns>
         public static bool operator !=(Option<T> lhs, Option<T> rhs)
         {
@@ -167,9 +211,9 @@ namespace System.Option
         /// <param name="other">The option to compare to.</param>
         /// <returns>
         /// true if the options' values are equal
-        /// or both options are Option<T>.None,
+        /// or both options are Option&lt;T&gt;.None,
         /// and false if the options' values are not
-        /// equal or only one option is Option<T>.None
+        /// equal or only one option is Option&lt;T&gt;.None
         /// </returns>
         public bool Equals(Option<T> other)
         {
@@ -196,25 +240,25 @@ namespace System.Option
         /// </summary>
         /// <param name="other">The object to compare to.</param>
         /// <returns>
-        /// true if the object is an Option<T> and
+        /// true if the object is an Option&lt;T&gt; and
         /// the options' values are equal
-        /// or both options are Option<T>.None,
-        /// and false if the object is not an Option<T> or
+        /// or both options are Option&lt;T&gt;.None,
+        /// and false if the object is not an Option&lt;T&gt; or
         /// the options' values are not equal
-        /// or only one option is Option<T>.None
+        /// or only one option is Option&lt;T&gt;.None
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            if (obj is Option<T>)
+            if (other is Option<T>)
             {
-                return Equals((Option<T>)obj);
+                return Equals((Option<T>)other);
             }
 
             return false;
         }
 
         /// <summary>
-        /// Gets the HashCode for the Option<T>.
+        /// Gets the HashCode for the Option&lt;T&gt;.
         /// </summary>
         /// <returns>
         /// 0 if the Option is Option.None, otherwise
@@ -231,6 +275,24 @@ namespace System.Option
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// A subclass of Option indicating that there is be a value.
+    /// </summary>
+    /// <typeparam name="T">The type of option.</typeparam>
+    public class Some<T> : Option<T>
+    {
+        internal Some(T value) : base(value) { }
+    }
+
+    /// <summary>
+    /// A subclass of Option indicating that there is no value.
+    /// </summary>
+    /// <typeparam name="T">The type of option.</typeparam>
+    public class None<T> : Option<T>
+    {
+        internal None() : base() { }
     }
 
     /// <summary>
@@ -251,11 +313,12 @@ namespace System.Option
         /// <typeparam name="T">The type to create an option for.</typeparam>
         /// <param name="value">The value to create an option for.</param>
         /// <returns>
-        /// A new Option<T> whose value is set to <paramref name="value"/>.
+        /// A new Option&lt;T&gt; whose value is
+        /// set to <paramref name="value"/>.
         /// </returns>
-        public static Option<T> From<T>(T value)
+        public static Some<T> Some<T>(T value)
         {
-            return new Option<T>(value);
+            return new Some<T>(value);
         }
 
         /// <summary>
@@ -278,11 +341,12 @@ namespace System.Option
         /// <typeparam name="T">The type to create an option for.</typeparam>
         /// <param name="value">The value to create an option for.</param>
         /// <returns>
-        /// A new Option<T> whose value is set to <paramref name="value"/>.
+        /// A new Option&lt;T&gt; whose value is
+        /// set to <paramref name="value"/>.
         /// </returns>
         public static Option<T> ToOption<T>(this T value)
         {
-            return Option.From(value);
+            return Option.Some(value);
         }
     }
 }
