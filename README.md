@@ -21,7 +21,7 @@ Why was it made?
 Option types are missing as a built in for C#, and while present and excellent in F# using F# options in C# is cumbersome. There are decent solutions which use extension methods or wrapper classes, but these solutions are not ideal because:
 
 1. You need to include the FSharp.Core runtime dll in your project
-2. The representation of FSharpOption<T>.None is actually `null`. The F# language has build in compiler constructs to handle this, but in C# whatever interop library you're using must take care of it.
+2. The representation of FSharpOption<T>.None is actually `null`. The F# language has built in compiler constructs to handle this, but in C# whatever interop library you're using must take care of it.
 
 ### Decompiled Source for FSharpOption<T>.None ###
 
