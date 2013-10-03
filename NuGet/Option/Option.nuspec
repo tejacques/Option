@@ -21,7 +21,7 @@
 
         Version 2.0.2:
          - Fix DebuggerDisplay
-         - Add Documentation to Option&lt;T&gt.Some;
+         - Add Documentation to Option&lt;T&gt;.Some;
 
         Version 2.0.1:
          - Allow Some&lt;T&gt; to have its value updated.
