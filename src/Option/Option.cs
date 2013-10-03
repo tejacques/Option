@@ -236,6 +236,14 @@ namespace System.Option
         /// </returns>
         public static bool operator !=(Option<T> lhs, Option<T> rhs)
         {
+            if (null == (object)lhs)
+            {
+                if (null == (object)rhs)
+                {
+                    return false;
+                }
+                return true;
+            }
             return !lhs.Equals(rhs);
         }
 

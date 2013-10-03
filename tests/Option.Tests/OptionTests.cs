@@ -92,7 +92,10 @@ namespace Tests
                 matchedOne = false;
             };
 
-            var staticMatcher = Option<int>.PatternMatch();
+            var staticMatcher = Option<int>.PatternMatch()
+                .None(() => matchedNone = true)
+                .Some(1, () => matchedOne = true)
+                .Some((x) => matchedSome = true);
 
             var matcher = optionSome.Match()
                 .None(() => matchedNone = true)
@@ -100,6 +103,15 @@ namespace Tests
                 .Some((x) => matchedSome = true);
 
             staticMatcher.Result();
+            
+            Assert.IsTrue(matchedNone);
+            Assert.IsFalse(matchedSome);
+            Assert.IsFalse(matchedOne);
+
+            resetMatchVars();
+
+            staticMatcher.Result(null);
+
             Assert.IsFalse(matchedNone);
             Assert.IsFalse(matchedSome);
             Assert.IsFalse(matchedOne);
@@ -155,6 +167,7 @@ namespace Tests
                 .Some(1, () => 2);
 
             Assert.AreEqual(default(int), staticMatcher.Result());
+            Assert.AreEqual(default(int), staticMatcher.Result(null));
             Assert.AreEqual(1, matcher.Result());
             Assert.AreEqual(0, matcher.Result(optionNone));
             Assert.AreEqual(1, matcher.Result(optionSome));
@@ -207,9 +220,15 @@ namespace Tests
             Option<int> oSame = 1;
             Option<int> oDifferent = 2;
 
+            Option<int> oNull = null;
+
             Assert.IsTrue(o == oSame);
             Assert.IsFalse(o == oDifferent);
             Assert.IsTrue(o != oDifferent);
+            Assert.IsTrue(oNull != o);
+            Assert.IsTrue(null != o);
+            Assert.IsFalse(oNull != null);
+            Assert.IsFalse(null != oNull);
         }
 
         [Test]
@@ -221,6 +240,15 @@ namespace Tests
 
             Assert.AreEqual(i.GetHashCode(), o1.GetHashCode());
             Assert.AreEqual(0, o2.GetHashCode());
+        }
+
+        [Test]
+        public void TestSome()
+        {
+            Some<int> s = Option.Some(0);
+            s.Value = 1;
+
+            Assert.AreEqual(1, s.Value);
         }
     }
 }

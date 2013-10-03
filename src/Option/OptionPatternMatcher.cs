@@ -21,6 +21,7 @@ namespace System.Option
         /// </summary>
         public OptionPatternMatcher()
         {
+            this._option = Option.None;
             this._matchedValues = new Dictionary<T, Action>();
         }
 
@@ -30,7 +31,6 @@ namespace System.Option
         /// <param name="option">The option to match on.</param>
         internal OptionPatternMatcher(Option<T> option) : this()
         {
-            this._option = Option.None;
             this._option = option;
         }
 
