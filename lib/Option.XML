@@ -21,6 +21,17 @@
             The bool indicating whether the option has a value.
             </summary>
         </member>
+        <member name="M:System.Option.Option`1.Some(`0)">
+            <summary>
+            Creates a new option from a specified value.
+            </summary>
+            <typeparam name="T">The type to create an option for.</typeparam>
+            <param name="value">The value to create an option for.</param>
+            <returns>
+            A new Option&lt;T&gt; whose value is
+            set to <paramref name="value"/>.
+            </returns>
+        </member>
         <member name="M:System.Option.Option`1.TryGetValue(`0@)">
             <summary>
             Tries to get the value of an option and place
