@@ -16,7 +16,7 @@ namespace System.Option
         /// <summary>
         /// The value of the option.
         /// </summary>
-        protected readonly T _value;
+        protected T _value;
 
         /// <summary>
         /// The bool indicating whether the option has a value.
@@ -24,6 +24,11 @@ namespace System.Option
         protected readonly bool _hasValue;
 
         private static None<T> _none = new None<T>();
+
+        public static Some<T> Some(T value)
+        {
+            return new Some<T>(value);
+        }
 
         /// <summary>
         /// The Option indication there is no value.
@@ -318,6 +323,25 @@ namespace System.Option
     public class Some<T> : Option<T>
     {
         internal Some(T value) : base(value) { }
+
+        /// <summary>
+        /// Gets the value of the option
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the option does not have a value.
+        /// </exception>
+        [DebuggerDisplay("_value")]
+        public new T Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+            }
+        }
     }
 
     /// <summary>
@@ -352,7 +376,7 @@ namespace System.Option
         /// </returns>
         public static Some<T> Some<T>(T value)
         {
-            return new Some<T>(value);
+            return Option<T>.Some(value);
         }
 
         /// <summary>
