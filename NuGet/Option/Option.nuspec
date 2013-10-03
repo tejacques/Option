@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Option</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <title>Option</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -19,14 +19,18 @@
     <releaseNotes>
         Version Release Notes:
 
+        Version 2.0.2:
+         - Fix DebuggerDisplay
+         - Add Documentation to Option&lt;T&gt.Some;
+
         Version 2.0.1:
-        - Allow Some&lt;T&gt; to have its value updated.
-        - OptionPatternMatcher's default value Option value is now Option.None.
-        - Fix edge case inequality operator.
+         - Allow Some&lt;T&gt; to have its value updated.
+         - OptionPatternMatcher's default value Option value is now Option.None.
+         - Fix edge case inequality operator.
 
         Version 2.0.0:
-        - Added functional pattern matching as a fluent API to Options in the form:
-          var matcher = Option&lt;T&gt;.PatternMatch()
+         - Added functional pattern matching as a fluent API to Options in the form:
+           var matcher = Option&lt;T&gt;.PatternMatch()
               .None(() => { /* Action when the Option is None */ })
               .Some(value, () => { /* Action when the Option is value */ })
               .Some((value) => { /* Action when the Option is Some&lt;T&gt; */ });
@@ -43,16 +47,16 @@
               .Some((value) => value.ToString())
               .Result();
 
-        - Pattern matching matches one and only one pattern.
-        - Tests have 100% code coverage.
-        - New Some&lt;T&gt; and None&lt;T&gt; classes.
+         - Pattern matching matches one and only one pattern.
+         - Tests have 100% code coverage.
+         - New Some&lt;T&gt; and None&lt;T&gt; classes.
 
-        - Breaking Changes:
-          - From() method replaced with Some().
-          - ToOption() extension method has been removed.
+         - Breaking Changes:
+           - From() method replaced with Some().
+           - ToOption() extension method has been removed.
 
         Version 1.0.1:
-        - Include documentation.
+         - Include documentation.
 
         Version 1.0.0:
          - Adds the Option type to the System.Option namespace.
