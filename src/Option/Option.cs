@@ -11,6 +11,7 @@ namespace System.Option
     /// between an intentionally set value, and a default value of None.
     /// </summary>
     /// <typeparam name="T">The type to create an option for.</typeparam>
+    [DebuggerDisplay("HasValue = {_hasValue}, Value = {_value}")]
     public class Option<T> : IEquatable<Option<T>>
     {
         /// <summary>
@@ -25,6 +26,15 @@ namespace System.Option
 
         private static None<T> _none = new None<T>();
 
+        /// <summary>
+        /// Creates a new option from a specified value.
+        /// </summary>
+        /// <typeparam name="T">The type to create an option for.</typeparam>
+        /// <param name="value">The value to create an option for.</param>
+        /// <returns>
+        /// A new Option&lt;T&gt; whose value is
+        /// set to <paramref name="value"/>.
+        /// </returns>
         public static Some<T> Some(T value)
         {
             return new Some<T>(value);
@@ -52,7 +62,7 @@ namespace System.Option
         /// <exception cref="InvalidOperationException">
         /// Thrown if the option does not have a value.
         /// </exception>
-        [DebuggerDisplay("_value")]
+        [DebuggerDisplay("{_value}")]
         public T Value
         {
             get
@@ -328,6 +338,7 @@ namespace System.Option
     /// A subclass of Option indicating that there is be a value.
     /// </summary>
     /// <typeparam name="T">The type of option.</typeparam>
+    [DebuggerDisplay("Value = {Value}")]
     public class Some<T> : Option<T>
     {
         internal Some(T value) : base(value) { }
@@ -338,7 +349,7 @@ namespace System.Option
         /// <exception cref="InvalidOperationException">
         /// Thrown if the option does not have a value.
         /// </exception>
-        [DebuggerDisplay("_value")]
+        [DebuggerDisplay("{_value}")]
         public new T Value
         {
             get
@@ -356,6 +367,7 @@ namespace System.Option
     /// A subclass of Option indicating that there is no value.
     /// </summary>
     /// <typeparam name="T">The type of option.</typeparam>
+    [DebuggerDisplay("None")]
     public class None<T> : Option<T>
     {
         internal None() : base() { }
