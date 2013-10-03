@@ -189,6 +189,14 @@
             </summary>
             <typeparam name="T">The type of option.</typeparam>
         </member>
+        <member name="P:System.Option.Some`1.Value">
+            <summary>
+            Gets the value of the option
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if the option does not have a value.
+            </exception>
+        </member>
         <member name="T:System.Option.None`1">
             <summary>
             A subclass of Option indicating that there is no value.
