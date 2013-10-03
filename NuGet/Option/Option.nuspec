@@ -64,7 +64,7 @@
     <dependencies>
     </dependencies>
     <copyright>Copyright 2013</copyright>
-    <tags>Option Some None Maybe</tags>
+    <tags>Option Some None Maybe Functional</tags>
   </metadata>
   <files>
     <file src="..\..\lib\*.*" target="lib\Net35" />
