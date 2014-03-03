@@ -117,11 +117,7 @@ namespace System.Option
         /// <param name="option">The option to match on.</param>
         public void Result(Option<T> option)
         {
-            if (null == option)
-            {
-                // Do nothing
-            }
-            else if (option.HasValue)
+            if (option.HasValue)
             {
                 T value = option.Value;
                 if (this._matchedValues.ContainsKey(value))

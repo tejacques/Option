@@ -12,19 +12,19 @@ namespace System.Option
     /// </summary>
     /// <typeparam name="T">The type to create an option for.</typeparam>
     [DebuggerDisplay("HasValue = {_hasValue}, Value = {_value}")]
-    public class Option<T> : IEquatable<Option<T>>
+    public struct Option<T> : IEquatable<Option<T>>
     {
         /// <summary>
         /// The value of the option.
         /// </summary>
-        protected T _value;
+        private T _value;
 
         /// <summary>
         /// The bool indicating whether the option has a value.
         /// </summary>
-        protected readonly bool _hasValue;
+        private readonly bool _hasValue;
 
-        private static None<T> _none = new None<T>();
+        private static Option<T> _none = new Option<T>();
 
         /// <summary>
         /// Creates a new option from a specified value.
@@ -35,15 +35,15 @@ namespace System.Option
         /// A new Option&lt;T&gt; whose value is
         /// set to <paramref name="value"/>.
         /// </returns>
-        public static Some<T> Some(T value)
+        public static Option<T> Some(T value)
         {
-            return new Some<T>(value);
+            return new Option<T>(value);
         }
 
         /// <summary>
         /// The Option indication there is no value.
         /// </summary>
-        public static None<T> None
+        public static Option<T> None
         {
             get { return _none; }
         }
@@ -99,11 +99,6 @@ namespace System.Option
             result = this.ValueOrDefault;
 
             return this.HasValue;
-        }
-
-        internal Option()
-        {
-            _hasValue = false;
         }
 
         internal Option(T value)
@@ -193,7 +188,7 @@ namespace System.Option
         {
             return null == value
                 ? (Option<T>)Option<T>.None
-                : new Some<T>(value);
+                : new Option<T>(value);
         }
 
         /// <summary>
@@ -335,45 +330,6 @@ namespace System.Option
     }
 
     /// <summary>
-    /// A subclass of Option indicating that there is be a value.
-    /// </summary>
-    /// <typeparam name="T">The type of option.</typeparam>
-    [DebuggerDisplay("Value = {Value}")]
-    public class Some<T> : Option<T>
-    {
-        internal Some(T value) : base(value) { }
-
-        /// <summary>
-        /// Gets the value of the option
-        /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the option does not have a value.
-        /// </exception>
-        [DebuggerDisplay("{_value}")]
-        public new T Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-            }
-        }
-    }
-
-    /// <summary>
-    /// A subclass of Option indicating that there is no value.
-    /// </summary>
-    /// <typeparam name="T">The type of option.</typeparam>
-    [DebuggerDisplay("None")]
-    public class None<T> : Option<T>
-    {
-        internal None() : base() { }
-    }
-
-    /// <summary>
     /// An Option type that allows the use of Option.None
     /// as well as the creation of Options.
     /// </summary>
@@ -394,8 +350,13 @@ namespace System.Option
         /// A new Option&lt;T&gt; whose value is
         /// set to <paramref name="value"/>.
         /// </returns>
-        public static Some<T> Some<T>(T value)
+        public static Option<T> Some<T>(T value)
         {
+            if (null == value)
+            {
+                throw new ArgumentNullException("value");
+            }
+
             return Option<T>.Some(value);
         }
 

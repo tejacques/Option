@@ -25,10 +25,8 @@ namespace Tests
             Assert.IsFalse(objectOption.HasValue);
             Assert.IsTrue(Option.None == objectOption);
 
-            Option<object> nullOption = Option.Some<object>(null);
-
-            Assert.IsTrue(nullOption.HasValue);
-            Assert.AreEqual(null, nullOption.Value);
+            Assert.Throws<ArgumentNullException>(() => 
+                Option.Some<object>(null));
         }
 
         [Test]
@@ -112,7 +110,7 @@ namespace Tests
 
             staticMatcher.Result(null);
 
-            Assert.IsFalse(matchedNone);
+            Assert.IsTrue(matchedNone);
             Assert.IsFalse(matchedSome);
             Assert.IsFalse(matchedOne);
 
@@ -185,19 +183,16 @@ namespace Tests
         public void TestImplicitOperators()
         {
             Option<int?> o1 = 1;                        // Some<int?>(1)
-            Option<int?> o2 = Option.Some<int?>(null);  // Some<int?>(null)
-            Option<int?> o3 = (int?)null;               // None<int?>
+            Option<int?> o2 = (int?)null;               // None<int?>
 
             Assert.AreEqual(true, o1.HasValue);
-            Assert.AreEqual(true, o2.HasValue);
-            Assert.AreEqual(false, o3.HasValue);
+            Assert.AreEqual(false, o2.HasValue);
 
             int? i1 = o1;
-            int? i2 = o2;
 
             Assert.Throws(typeof(InvalidOperationException), () =>
             {
-                int? i3 = o3;
+                int? i2 = o2;
             });
         }
 
@@ -245,8 +240,7 @@ namespace Tests
         [Test]
         public void TestSome()
         {
-            Some<int> s = Option.Some(0);
-            s.Value = 1;
+            Option<int> s = 1;
 
             Assert.AreEqual(1, s.Value);
         }
