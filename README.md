@@ -55,10 +55,28 @@ public void Example()
         Console.WriteLine(option.Value);
     }
     
+    // Alternatively...
+    option.Match(
+        None: () => { /* Do nothing */ }
+        Some: value =>
+        {
+            //Do something with the value
+            Console.WriteLine(value);
+        });
+    
     var s = matchOptionExample(1); // s = "One"
 }
 
-public string matchOptionExample(Option<int> option)
+// More performant, but can't match on exact values
+public string matchOptionExample1(Option<int> option)
+{
+    return option.Match(
+        None: () => "No value"
+        Some: (value) => value.ToString());
+}
+
+// Less performant but can match on values
+public string matchOptionExample2(Option<int> option)
 {
     return option.Match<string>()
         .None(() => "No value")
