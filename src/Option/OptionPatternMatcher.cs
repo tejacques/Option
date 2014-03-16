@@ -7,6 +7,9 @@ namespace System.Option
 {
     /// <summary>
     /// A class to help with pattern matching on Option types.
+    /// This should only be used if you want to match on specific
+    /// values of the option, otherwise use the default Match
+    /// method on the Option.
     /// </summary>
     /// <typeparam name="T">The type of the option.</typeparam>
     public class OptionPatternMatcher<T>
@@ -120,9 +123,10 @@ namespace System.Option
             if (option.HasValue)
             {
                 T value = option.Value;
-                if (this._matchedValues.ContainsKey(value))
+                Action action;
+                if (this._matchedValues.TryGetValue(value, out action))
                 {
-                    this._matchedValues[value]();
+                    action();
                 }
                 else if (null != this._matchedSome)
                 {
@@ -298,16 +302,13 @@ namespace System.Option
         {
             TOut result = defaultValue;
 
-            if (null == option)
-            {
-                // Do nothing
-            }
-            else if (option.HasValue)
+            if (option.HasValue)
             {
                 TIn value = option.Value;
-                if (this._matchedValues.ContainsKey(value))
+                Func<TOut> func;
+                if (this._matchedValues.TryGetValue(value, out func))
                 {
-                    result = this._matchedValues[value]();
+                    result = func();
                 }
                 else if (null != this._matchedSome)
                 {

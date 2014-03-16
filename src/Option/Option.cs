@@ -45,7 +45,7 @@ namespace System.Option
         /// </summary>
         public static Option<T> None
         {
-            get { return _none; }
+            get { return Option<T>._none; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace System.Option
         /// </summary>
         public bool HasValue
         {
-            get { return _hasValue; }
+            get { return this._hasValue; }
         }
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace System.Option
         {
             get
             {
-                if (!HasValue)
+                if (!this.HasValue)
                 {
                     throw new InvalidOperationException(
                         "The option does not have a value");
                 }
 
-                return _value;
+                return this._value;
             }
         }
 
@@ -83,7 +83,7 @@ namespace System.Option
         /// </summary>
         public T ValueOrDefault
         {
-            get { return _hasValue ? _value : default(T); }
+            get { return this._hasValue ? this._value : default(T); }
         }
 
         /// <summary>
@@ -101,10 +101,15 @@ namespace System.Option
             return this.HasValue;
         }
 
+        public T ValueOr(T val)
+        {
+            return this._hasValue ? this._value : val;
+        }
+
         internal Option(T value)
         {
-            _hasValue = true;
-            _value = value;
+            this._hasValue = true;
+            this._value = value;
         }
 
         #region Pattern Matching
@@ -119,6 +124,50 @@ namespace System.Option
         public OptionPatternMatcher<T> Match()
         {
             return new OptionPatternMatcher<T>(this);
+        }
+
+        /// <summary>
+        /// Runs the appropriate action on the option depending on
+        /// whether or not the option has a value.
+        /// </summary>
+        /// <param name="None">
+        /// The action to run if the option doesn't have a value.
+        /// </param>
+        /// <param name="Some">
+        /// The action to run if the option does have a value.
+        /// </param>
+        public void Match(Action None = null, Action<T> Some = null)
+        {
+            if (!this._hasValue)
+            {
+                if (null != None) None();
+            }
+            else
+            {
+                if (null != Some) Some(this._value);
+            }
+        }
+
+        /// <summary>
+        /// Runs the appropriate function on the option depending on
+        /// whether or not the option has a value.
+        /// </summary>
+        /// <param name="None">
+        /// The function to run if the option doesn't have a value.
+        /// </param>
+        /// <param name="Some">
+        /// The function to run if the option does have a value.
+        /// </param>
+        public TOut Match<TOut>(Func<TOut> None, Func<T, TOut> Some)
+        {
+            if (!this._hasValue)
+            {
+                return None();
+            }
+            else
+            {
+                return Some(this._value);
+            }
         }
 
         /// <summary>
@@ -187,7 +236,7 @@ namespace System.Option
         public static implicit operator Option<T>(T value)
         {
             return null == value
-                ? (Option<T>)Option<T>.None
+                ? Option<T>.None
                 : new Option<T>(value);
         }
 
@@ -199,6 +248,9 @@ namespace System.Option
         /// Option&lt;T&gt;.Value, which will throw InvalidOperationException
         /// if the option does not have a value.
         /// </returns>
+        [Obsolete("This is not a safe operation! "
+            +"You should use Option.ValueOr(val) "
+            +"or Option.ValueOrDefault instead.")]
         public static implicit operator T(Option<T> option)
         {
             return option.Value;
@@ -217,14 +269,6 @@ namespace System.Option
         /// </returns>
         public static bool operator ==(Option<T> lhs, Option<T> rhs)
         {
-            if (null == (object)lhs)
-            {
-                if (null == (object)rhs)
-                {
-                    return true;
-                }
-                return false;
-            }
             return lhs.Equals(rhs);
         }
 
@@ -268,8 +312,7 @@ namespace System.Option
         /// </returns>
         public bool Equals(Option<T> other)
         {
-            if (null == (object)other
-                || this.HasValue != other.HasValue)
+            if (this.HasValue != other.HasValue)
             {
                 return false;
             }
@@ -280,7 +323,9 @@ namespace System.Option
                 return true;
             }
 
-            return EqualityComparer<T>.Default.Equals(_value, other.Value);
+            return EqualityComparer<T>.Default.Equals(
+                this._value,
+                other.Value);
         }
 
         #endregion
@@ -318,12 +363,12 @@ namespace System.Option
         /// </returns>
         public override int GetHashCode()
         {
-            if (!HasValue)
+            if (!this._hasValue)
             {
                 return 0;
             }
 
-            return EqualityComparer<T>.Default.GetHashCode(_value);
+            return EqualityComparer<T>.Default.GetHashCode(this._value);
         }
 
         #endregion
@@ -335,7 +380,7 @@ namespace System.Option
     /// </summary>
     public sealed class Option
     {
-        private static Option _none = new Option();
+        private static Option _none = null;
 
         private Option()
         {
@@ -365,7 +410,25 @@ namespace System.Option
         /// </summary>
         public static Option None
         {
-            get { return _none; }
+            get { return Option._none; }
         }
+    }
+
+    /// <summary>
+    /// A class used solely for pattern matching
+    /// </summary>
+    /// <typeparam name="T">The type of option</typeparam>
+    public sealed class None<T>
+    {
+        private None() { }
+    }
+
+    /// <summary>
+    /// A class used solely for pattern matching
+    /// </summary>
+    /// <typeparam name="T">The type of option</typeparam>
+    public sealed class Some<T>
+    {
+        private Some() { }
     }
 }
