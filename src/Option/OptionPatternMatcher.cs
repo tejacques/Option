@@ -15,7 +15,7 @@ namespace System.Option
     public class OptionPatternMatcher<T>
     {
         private Option<T> _option;
-        private readonly Dictionary<T, Action> _matchedValues;
+        private Dictionary<T, Action> _matchedValues;
         private Action<T> _matchedSome;
         private Action _matchedNone;
 
@@ -25,7 +25,6 @@ namespace System.Option
         public OptionPatternMatcher()
         {
             this._option = Option.None;
-            this._matchedValues = new Dictionary<T, Action>();
         }
 
         /// <summary>
@@ -71,6 +70,10 @@ namespace System.Option
         /// <returns>The current OptionPatternMatcher&lt;T&gt;</returns>
         public OptionPatternMatcher<T> Some(T value, Action action)
         {
+            if (null == this._matchedValues)
+            {
+                this._matchedValues = new Dictionary<T, Action>();
+            }
             if (!this._matchedValues.ContainsKey(value))
             {
                 this._matchedValues.Add(value, action);
@@ -124,7 +127,8 @@ namespace System.Option
             {
                 T value = option.Value;
                 Action action;
-                if (this._matchedValues.TryGetValue(value, out action))
+                if (null != this._matchedValues
+                    && this._matchedValues.TryGetValue(value, out action))
                 {
                     action();
                 }
@@ -154,7 +158,7 @@ namespace System.Option
     public class OptionPatternMatcher<TIn, TOut>
     {
         private readonly Option<TIn> _option;
-        private readonly Dictionary<TIn, Func<TOut>> _matchedValues;
+        private Dictionary<TIn, Func<TOut>> _matchedValues;
         private Func<TIn,TOut> _matchedSome;
         private Func<TOut> _matchedNone;
 
@@ -164,7 +168,6 @@ namespace System.Option
         public OptionPatternMatcher()
         {
             this._option = Option.None;
-            this._matchedValues = new Dictionary<TIn, Func<TOut>>();
         }
 
         internal OptionPatternMatcher(Option<TIn> option) : this()
@@ -208,6 +211,10 @@ namespace System.Option
             TIn value,
             Func<TOut> func)
         {
+            if (null == this._matchedValues)
+            {
+                this._matchedValues = new Dictionary<TIn, Func<TOut>>();
+            }
             if (!this._matchedValues.ContainsKey(value))
             {
                 this._matchedValues.Add(value, func);
@@ -306,7 +313,8 @@ namespace System.Option
             {
                 TIn value = option.Value;
                 Func<TOut> func;
-                if (this._matchedValues.TryGetValue(value, out func))
+                if (null != this._matchedValues
+                    && this._matchedValues.TryGetValue(value, out func))
                 {
                     result = func();
                 }

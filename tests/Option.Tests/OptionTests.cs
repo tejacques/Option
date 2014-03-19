@@ -11,18 +11,6 @@ namespace Tests
     [TestFixture]
     public class OptionTests
     {
-        public static int loops = 1000000;
-        [Test]
-        public void A_Jit()
-        {
-            var tmp = loops;
-            loops = 1;
-            BenchmarkMatchT();
-            BenchmarkMatchTInTOut();
-            BenchmarkOptionPatternMatcherT();
-            BenchmarkOptionPatternMatcherTInTOut();
-            loops = tmp;
-        }
         [Test]
         public void TestCreate()
         {
@@ -118,17 +106,6 @@ namespace Tests
         }
 
         [Test]
-        public void BenchmarkMatchT()
-        {
-            Option<int> o = Option.None;
-
-            for (int i = 0; i < loops; i++)
-            {
-                o.Match(None: () => { }, Some: x => { });
-            }
-        }
-
-        [Test]
         public void TestOptionMatchTInTOut()
         {
             Option<int> optionNone = Option.None;
@@ -140,17 +117,6 @@ namespace Tests
             Assert.AreEqual(1, optionSome.Match(
                 None: () => 0,
                 Some: (x) => 1));
-        }
-
-        [Test]
-        public void BenchmarkMatchTInTOut()
-        {
-            Option<int> o = Option.None;
-
-            for (int i = 0; i < loops; i++)
-            {
-                var v = o.Match(None: () => 0, Some: x => x);
-            }
         }
 
         [Test]
@@ -232,35 +198,6 @@ namespace Tests
         }
 
         [Test]
-        public void BenchmarkOptionPatternMatcherT()
-        {
-            Option<int> o = Option.None;
-
-            for (int i = 0; i < loops; i++)
-            {
-                o.Match()
-                    .None(() => { })
-                    .Some((x) => { })
-                    .Result();
-            }
-        }
-
-        [Test]
-        public void BenchmarkOptionPatternMatcherTCached()
-        {
-            Option<int> o = Option.None;
-
-            var matcher = Option<int>.PatternMatch()
-                .None(() => { })
-                .Some((x) => { });
-
-            for (int i = 0; i < loops; i++)
-            {
-                matcher.Result(o);
-            }
-        }
-
-        [Test]
         public void TestOptionPatternMatcherTInTOut()
         {
             Option<int> optionNone = Option.None;
@@ -290,38 +227,10 @@ namespace Tests
         }
 
         [Test]
-        public void BenchmarkOptionPatternMatcherTInTOut()
-        {
-            Option<int> o = Option.None;
-
-            for (int i = 0; i < loops; i++)
-            {
-                var v = o.Match<int>()
-                    .None(() => 0)
-                    .Some((x) => 1)
-                    .Result();
-            }
-        }
-
-        [Test]
-        public void BenchmarkOptionPatternMatcherTInTOutCached()
-        {
-            Option<int> o = Option.None;
-            var matcher = Option<int>.PatternMatch<int>()
-                .None(() => 0)
-                .Some((x) => 1);
-
-            for (int i = 0; i < loops; i++)
-            {
-                var v = matcher.Result(o);
-            }
-        }
-
-        [Test]
         public void TestImplicitOperators()
         {
-            Option<int?> o1 = 1;                        // Some<int?>(1)
-            Option<int?> o2 = (int?)null;               // None<int?>
+            Option<int?> o1 = 1;           // Some<int?>(1)
+            Option<int?> o2 = (int?)null;  // None<int?>
 
             Assert.AreEqual(true, o1.HasValue);
             Assert.AreEqual(false, o2.HasValue);

@@ -29,7 +29,6 @@ namespace System.Option
         /// <summary>
         /// Creates a new option from a specified value.
         /// </summary>
-        /// <typeparam name="T">The type to create an option for.</typeparam>
         /// <param name="value">The value to create an option for.</param>
         /// <returns>
         /// A new Option&lt;T&gt; whose value is
@@ -87,6 +86,28 @@ namespace System.Option
         }
 
         /// <summary>
+        /// Gets the value of the option if present,
+        /// and the provided value otherwise.
+        /// </summary>
+        /// <param name="val">The provided value</param>
+        /// <returns>The Option's value or val</returns>
+        public T ValueOr(T val)
+        {
+            return this._hasValue ? this._value : val;
+        }
+
+        /// <summary>
+        /// Gets the value of the option if present,
+        /// and the provided value from the funcion otherwise.
+        /// </summary>
+        /// <param name="val">The provided value function</param>
+        /// <returns>The Option's value or val()</returns>
+        public T ValueOr(Func<T> val)
+        {
+            return this._hasValue ? this._value : val();
+        }
+
+        /// <summary>
         /// Tries to get the value of an option and place
         /// it in the referenced result.
         /// </summary>
@@ -99,11 +120,6 @@ namespace System.Option
             result = this.ValueOrDefault;
 
             return this.HasValue;
-        }
-
-        public T ValueOr(T val)
-        {
-            return this._hasValue ? this._value : val;
         }
 
         internal Option(T value)
@@ -211,7 +227,6 @@ namespace System.Option
         }
 
         #endregion
-
 
         #region Operators
 
