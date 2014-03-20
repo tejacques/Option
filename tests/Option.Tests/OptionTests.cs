@@ -73,6 +73,18 @@ namespace Tests
         }
 
         [Test]
+        public void TestValueOr()
+        {
+            Option<object> objectOption = Option.None;
+            Assert.AreEqual(1, objectOption.ValueOr(1));
+
+            object o = new object();
+            objectOption = o;
+
+            Assert.AreEqual(o, objectOption.ValueOr(1));
+        }
+
+        [Test]
         public void TestOptionMatchT()
         {
             Option<int> optionNone = Option.None;

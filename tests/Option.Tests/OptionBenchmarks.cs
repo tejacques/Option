@@ -21,6 +21,8 @@ namespace Tests
             BenchmarkMatchTInTOut();
             BenchmarkOptionPatternMatcherT();
             BenchmarkOptionPatternMatcherTInTOut();
+            BenchmarkOptionPatternMatcherTInTOutValues();
+            BenchmarkOptionPatternMatcherTInTOutValuesCached();
             loops = tmp;
         }
 
@@ -98,6 +100,36 @@ namespace Tests
             var matcher = Option<int>.PatternMatch<int>()
                 .None(() => 0)
                 .Some((x) => 1);
+
+            for (int i = 0; i < loops; i++)
+            {
+                var v = matcher.Result(o);
+            }
+        }
+
+        [Test]
+        public void BenchmarkOptionPatternMatcherTInTOutValues()
+        {
+            Option<int> o = Option.None;
+
+            for (int i = 0; i < loops; i++)
+            {
+                var v = o.Match<int>()
+                    .None(() => 0)
+                    .Some(0, () => 1)
+                    .Some((x) => 2)
+                    .Result();
+            }
+        }
+
+        [Test]
+        public void BenchmarkOptionPatternMatcherTInTOutValuesCached()
+        {
+            Option<int> o = Option.None;
+            var matcher = Option<int>.PatternMatch<int>()
+                .None(() => 0)
+                .Some(0, () => 1)
+                .Some((x) => 2);
 
             for (int i = 0; i < loops; i++)
             {
