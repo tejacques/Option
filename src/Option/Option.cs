@@ -250,9 +250,7 @@ namespace System.Option
         /// </returns>
         public static implicit operator Option<T>(T value)
         {
-            return null == value
-                ? Option<T>.None
-                : new Option<T>(value);
+            return Option.Create(value);
         }
 
         /// <summary>
@@ -300,14 +298,6 @@ namespace System.Option
         /// </returns>
         public static bool operator !=(Option<T> lhs, Option<T> rhs)
         {
-            if (null == (object)lhs)
-            {
-                if (null == (object)rhs)
-                {
-                    return false;
-                }
-                return true;
-            }
             return !lhs.Equals(rhs);
         }
 
@@ -397,8 +387,41 @@ namespace System.Option
     {
         private static Option _none = null;
 
+        /// <summary>
+        /// Private constructor so that nobody can make an instance
+        /// </summary>
         private Option()
         {
+        }
+
+        /// <summary>
+        /// Creates an Option&lt;T&gt; from a value.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>
+        /// Option&lt;T&gt;.None if value is null, otherwise an
+        /// Option&lt;T&gt; whose value is set to <paramref name="value"/>.
+        /// </returns>
+        public static Option<T> Create<T>(T value)
+        {
+            return null == value
+                ? Option<T>.None
+                : new Option<T>(value);
+        }
+
+        /// <summary>
+        /// Creates an Option&lt;T&gt; from a Nullable value.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>
+        /// Option&lt;T&gt;.None if HasValue is false, otherwise an
+        /// Option&lt;T&gt; whose value is set to <paramref name="value"/>.
+        /// </returns>
+        public static Option<T> Create<T>(Nullable<T> value) where T: struct
+        {
+            return !value.HasValue
+                ? Option<T>.None
+                : new Option<T>(value.Value);
         }
 
         /// <summary>
@@ -421,29 +444,30 @@ namespace System.Option
         }
 
         /// <summary>
+        /// Creates a new option from a specified value.
+        /// </summary>
+        /// <typeparam name="T">The type to create an option for.</typeparam>
+        /// <param name="value">The value to create an option for.</param>
+        /// <returns>
+        /// A new Option&lt;T&gt; whose value is
+        /// set to <paramref name="value"/>.
+        /// </returns>
+        public static Option<T> Some<T>(Nullable<T> value) where T: struct
+        {
+            if (!value.HasValue)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            return Option<T>.Some(value.Value);
+        }
+
+        /// <summary>
         /// The default Option type specifying there is no value.
         /// </summary>
         public static Option None
         {
             get { return Option._none; }
         }
-    }
-
-    /// <summary>
-    /// A class used solely for pattern matching
-    /// </summary>
-    /// <typeparam name="T">The type of option</typeparam>
-    public sealed class None<T>
-    {
-        private None() { }
-    }
-
-    /// <summary>
-    /// A class used solely for pattern matching
-    /// </summary>
-    /// <typeparam name="T">The type of option</typeparam>
-    public sealed class Some<T>
-    {
-        private Some() { }
     }
 }

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="OptionPatternMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

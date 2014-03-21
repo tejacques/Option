@@ -27,6 +27,16 @@ namespace Tests
 
             Assert.Throws<ArgumentNullException>(() => 
                 Option.Some<object>(null));
+
+            Option<int> intoption = ((int?)null).ToOption();
+            intoption = Option.Create((int?)null);
+            intoption = Option.Create((int?)1);
+            intoption = Option.Some((int?)1);
+            intoption = Option.Some(1);
+            intoption = 0.ToOption();
+
+            Assert.Throws<ArgumentNullException>(() =>
+                Option.Some((int?)null));
         }
 
         [Test]
@@ -77,11 +87,13 @@ namespace Tests
         {
             Option<object> objectOption = Option.None;
             Assert.AreEqual(1, objectOption.ValueOr(1));
+            Assert.AreEqual(1, objectOption.ValueOr(() => 1));
 
             object o = new object();
             objectOption = o;
 
             Assert.AreEqual(o, objectOption.ValueOr(1));
+            Assert.AreEqual(o, objectOption.ValueOr(() => 1));
         }
 
         [Test]
