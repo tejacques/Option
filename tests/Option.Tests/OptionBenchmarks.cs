@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Option;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests
 {
@@ -18,7 +17,9 @@ namespace Tests
             var tmp = loops;
             loops = 1;
             BenchmarkMatchT();
+            BenchmarkMatchTCached();
             BenchmarkMatchTInTOut();
+            BenchmarkMatchTInTOutCached();
             BenchmarkOptionPatternMatcherT();
             BenchmarkOptionPatternMatcherTInTOut();
             BenchmarkOptionPatternMatcherTInTOutValues();
@@ -38,12 +39,37 @@ namespace Tests
         }
 
         [Test]
-        public void BenchmarkMatchTInTOut()
+        public void BenchmarkMatchTCached()
         {
             Option<int> o = Option.None;
 
             for (int i = 0; i < loops; i++)
             {
+                o.Match(None: () => { }, Some: x => { });
+            }
+        }
+
+        [Test]
+        public void BenchmarkMatchTInTOut()
+        {
+            for (int i = 0; i < loops; i++)
+            {
+                Option<int> o = i;
+
+                var v = o.Match(
+                    None: () => 0,
+                    Some: x => x);
+            }
+        }
+
+        [Test]
+        public void BenchmarkMatchTInTOutCached()
+        {
+
+            for (int i = 0; i < loops; i++)
+            {
+                Option<int> o = i;
+
                 var v = o.Match(
                     None: () => 0,
                     Some: x => x);
