@@ -320,5 +320,67 @@ namespace Tests
 
             Assert.AreEqual(1, s.Value);
         }
+
+        [Test]
+        public void TestIEnumerable()
+        {
+            Option<int> o = 1;
+
+            TestIEnumerableHelper(o);
+            TestIEnumerableHelper(Option.None);
+
+            var now = DateTime.UtcNow;
+            Option<DateTime> dto = now.AddHours(1);
+
+            Option<int>[] oarray = new Option<int>[] { 1 };
+
+            Assert.AreEqual(1, oarray.Flatten().Count());
+
+            oarray = new Option<int>[] { Option.None };
+
+            Assert.AreEqual(0, oarray.Flatten().Count());
+
+            var aggr = dto
+                .Aggregate(TimeSpan.Zero, (ts, dt) => dt - now + ts);
+            Assert.AreEqual(TimeSpan.FromHours(1), aggr);
+        }
+
+        private static void TestIEnumerableHelper(Option<int> o)
+        {
+            var select = o.Select(x => x);
+            Assert.AreEqual(o.HasValue ? 1 : 0, select.Count());
+
+            select = o.Select((x, index) => x);
+            Assert.AreEqual(o.HasValue ? 1 : 0, select.Count());
+
+            var where = o.Where(x => true);
+            Assert.AreEqual(o.HasValue ? 1 : 0, where.Count());
+
+            where = o.Where((x, index) => true);
+            Assert.AreEqual(o.HasValue ? 1 : 0, where.Count());
+
+
+            if (o.HasValue)
+            {
+                var aggregate = o.Aggregate((acc, val) => acc + val);
+                Assert.AreEqual(o.ValueOrDefault, aggregate);
+
+                aggregate = o.Aggregate(0, (acc, val) => acc + val);
+                Assert.AreEqual(o.ValueOrDefault, aggregate);
+            }
+
+            bool run = false;
+            foreach (var obj in ((System.Collections.IEnumerable)o))
+            {
+                run = true;
+                Assert.AreEqual(1, (int)obj);
+            }
+
+            Assert.AreEqual(run, o.HasValue);
+
+            run = false;
+            o.ForEach((val) => run = true);
+            Assert.AreEqual(run, o.HasValue);
+        }
     }
 }

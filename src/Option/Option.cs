@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace System.Option
     /// </summary>
     /// <typeparam name="T">The type to create an option for.</typeparam>
     [DebuggerDisplay("HasValue = {_hasValue}, Value = {_value}")]
-    public struct Option<T> : IEquatable<Option<T>>
+    public struct Option<T> : IEquatable<Option<T>>, IEnumerable<T>
     {
         /// <summary>
         /// The value of the option.
@@ -303,6 +304,132 @@ namespace System.Option
 
         #endregion
 
+        #region LINQ
+
+        /// <summary>
+        /// Performs the specified action on the value of the Option
+        /// if it holds a value.
+        /// </summary>
+        /// <param name="action">
+        /// The action to perform on the value of the Option
+        /// if it holds a value
+        /// </param>
+        public void ForEach(Action<T> action)
+        {
+            if (this._hasValue) action(this._value);
+        }
+
+        
+        /// <summary>
+        /// Projects each element of a sequence into a new form.
+        /// </summary>
+        /// <typeparam name="TResult">
+        /// The type of the value returned by the selector.
+        /// </typeparam>
+        /// <param name="selector">
+        /// A transform function to apply to each element;
+        /// the second parameter of the function represents
+        /// the index of the source element.
+        /// </param>
+        /// <returns>
+        /// A T[] whose elements are the result of invoking
+        /// the transform function on each element of source.
+        /// </returns>
+        public TResult[] Select<TResult>(Func<T, TResult> selector)
+        {
+            if(this._hasValue)
+            {
+                return new TResult[] { selector(this._value) };
+                //yield return selector(this._value);
+            }
+            else
+            {
+                return EmptyArray<TResult>.Array;
+            }
+        }
+
+        /// <summary>
+        /// Projects each element of a sequence into a new form.
+        /// </summary>
+        /// <typeparam name="TResult">
+        /// The type of the value returned by the selector.
+        /// </typeparam>
+        /// <param name="selector">
+        /// A transform function to apply to each element.
+        /// </param>
+        /// <returns>
+        /// A T[] whose elements are the result of invoking
+        /// the transform function on each element of source.
+        /// </returns>
+        public TResult[] Select<TResult>(
+            Func<T, int, TResult> selector)
+        {
+            // Could have been the below line, but
+            // the performance is substantially worse
+
+            //return this.Select<TResult>(val => selector(val, 0));
+
+            if (this._hasValue)
+            {
+                return new TResult[] { selector(this._value, 0) };
+            }
+            else
+            {
+                return EmptyArray<TResult>.Array;
+            }
+        }
+
+        /// <summary>
+        /// Filters a sequence of values based on a predicate.
+        /// </summary>
+        /// <param name="predicate">
+        /// A function to test the value of the Option; the second parameter
+        /// of the function represents the index of the source element.
+        /// </param>
+        /// <returns>
+        /// A T[] that contains elements from the value from the
+        /// Option if it satisfies the condition.
+        /// </returns>
+        public T[] Where(Func<T, bool> predicate)
+        {
+            if (this._hasValue && predicate(this._value))
+            {
+                return new T[] { this._value };
+            }
+            else
+            {
+                return EmptyArray<T>.Array;
+            }
+        }
+
+        /// <summary>
+        /// Filters a sequence of values based on a predicate.
+        /// </summary>
+        /// <param name="predicate">
+        /// A function to test the value of the Option.
+        /// </param>
+        /// <returns>
+        /// A T[] that contains elements from the value from the
+        /// Option if it satisfies the condition.
+        /// </returns>
+        public T[] Where(Func<T, int, bool> predicate)
+        {
+            // Could have been the below line, but
+            // the performance is substantially worse
+
+            //return this.Where(val => predicate(val, 0));
+
+            if (this._hasValue && predicate(this._value, 0))
+            {
+                return new T[] { this._value };
+            }
+            else
+            {
+                return EmptyArray<T>.Array;
+            }
+        }
+        #endregion
+
         #region IEquatable<T> Members
 
         /// <summary>
@@ -333,6 +460,37 @@ namespace System.Option
                 other.Value);
         }
 
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the Option
+        /// </summary>
+        /// <returns>
+        /// An iterator that will yield a value of there is one.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+        #endregion
+
+        #region IEnumerable Members
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the Option
+        /// </summary>
+        /// <returns>
+        /// An iterator that will yield a value of there is one.
+        /// </returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (this._hasValue)
+            {
+                yield return this._value;
+            }
+        }
         #endregion
 
         #region Overrides

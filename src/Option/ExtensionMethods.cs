@@ -26,6 +26,7 @@ namespace System.Option
         /// <summary>
         /// Converts a value to an Option&lt;T&gt;.
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="value">The value to convert.</param>
         /// <returns>
         /// Option&lt;T&gt;.None if value is null, otherwise an
@@ -35,6 +36,28 @@ namespace System.Option
             where T: struct
         {
             return Option.Create(value);
+        }
+
+        /// <summary>
+        /// Flattens a sequence of Option&lt;T&gt; into one sequence of T
+        /// elements where the value of the Option&lt;T&gt; was Some&lt;T&gt;
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="source">A sequence of Option&lt;T&gt;.</param>
+        /// <returns>
+        /// A sequence of T elements where the value of the Option&lt;T&gt;
+        /// was Some&lt;T&gt;.
+        /// </returns>
+        public static IEnumerable<T> Flatten<T>(
+            this IEnumerable<Option<T>> source)
+        {
+            foreach (var option in source)
+            {
+                if(option.HasValue)
+                {
+                    yield return option.Value;
+                }
+            }
         }
     }
 }
