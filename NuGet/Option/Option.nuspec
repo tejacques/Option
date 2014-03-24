@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Option</id>
-    <version>2.0.2</version>
+    <version>3.0.0</version>
     <title>Option</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -19,48 +19,23 @@
     <releaseNotes>
         Version Release Notes:
 
-        Version 2.0.2:
-         - Fix DebuggerDisplay
-         - Add Documentation to Option&lt;T&gt;.Some;
-
-        Version 2.0.1:
-         - Allow Some&lt;T&gt; to have its value updated.
-         - OptionPatternMatcher's default value Option value is now Option.None.
-         - Fix edge case inequality operator.
-
-        Version 2.0.0:
-         - Added functional pattern matching as a fluent API to Options in the form:
-           var matcher = Option&lt;T&gt;.PatternMatch()
-              .None(() => { /* Action when the Option is None */ })
-              .Some(value, () => { /* Action when the Option is value */ })
-              .Some((value) => { /* Action when the Option is Some&lt;T&gt; */ });
-
-          matcher.Result(Option&lt;T&gt; option); /* Will run the appropriately matched action on the option */
-
-          These are also present as instance functions on Option&lt;T&gt;:
-
-          Option&lt;int&gt; option = getOptionFromMethodCall();
-
-          var result = option.Match&lt;string&gt;()
-              .None(() => "None")
-              .Some(0, () => "Zero")
-              .Some((value) => value.ToString())
-              .Result();
-
-         - Pattern matching matches one and only one pattern.
-         - Tests have 100% code coverage.
-         - New Some&lt;T&gt; and None&lt;T&gt; classes.
-
+        Version 3.0.0:
          - Breaking Changes:
-           - From() method replaced with Some().
-           - ToOption() extension method has been removed.
+             - Option is now a struct (value type).
+             - Option now no longer has subclasses None and Some (since it is a struct)
+             - Namespace changed from System.Option to Functional.Option
+             - Implicit Conversion from Option&lt;T&gt; to &lt;T&gt; has been removed.
+         - Option now implements IEnumerable&lt;T&gt;
+         - ToOption() extension method added for regular and Nullable types.
+         - Pattern matching is now a function call in the form:
+            option.Match(
+                None: () => { /* Action when the Option is None */ },
+                Some: value => { /* Action when the Option is Some&lt;T&gt; */ });
 
-        Version 1.0.1:
-         - Include documentation.
-
-        Version 1.0.0:
-         - Adds the Option type to the System.Option namespace.
-     </releaseNotes>
+            var result = option.Match(
+                None: () => "None",
+                Some: value => value.ToString());
+    </releaseNotes>
     <dependencies>
     </dependencies>
     <copyright>Copyright 2013</copyright>
