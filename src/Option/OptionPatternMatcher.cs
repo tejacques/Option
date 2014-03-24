@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace System.Option
+namespace Functional.Option
 {
     /// <summary>
     /// A class to help with pattern matching on Option types.

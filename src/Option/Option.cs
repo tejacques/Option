@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace System.Option
+namespace Functional.Option
 {
     /// <summary>
     /// A generic Option type that allows for an explicit difference
