@@ -257,19 +257,6 @@ namespace Tests
 
             Assert.AreEqual(true, o1.HasValue);
             Assert.AreEqual(false, o2.HasValue);
-
-            // This is deprecated, but I still want to test that it works
-            // as it should until I remove it.
-#pragma warning disable 0618
-            int? i1 = o1;
-#pragma warning restore 0618
-
-            Assert.Throws(typeof(InvalidOperationException), () =>
-            {
-#pragma warning disable 0618
-                int? i2 = o2;
-#pragma warning restore 0618
-            });
         }
 
         [Test]

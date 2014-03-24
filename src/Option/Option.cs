@@ -255,22 +255,6 @@ namespace Functional.Option
         }
 
         /// <summary>
-        /// Implicitly converts an Option&lt;T&gt; to a T.
-        /// </summary>
-        /// <param name="option">The option to convert.</param>
-        /// <returns>
-        /// Option&lt;T&gt;.Value, which will throw InvalidOperationException
-        /// if the option does not have a value.
-        /// </returns>
-        [Obsolete("This is not a safe operation! "
-            +"You should use Option.ValueOr(val) "
-            +"or Option.ValueOrDefault instead.")]
-        public static implicit operator T(Option<T> option)
-        {
-            return option.Value;
-        }
-
-        /// <summary>
         /// Comapares two options for equality.
         /// </summary>
         /// <param name="lhs">The option on the left hand side.</param>
