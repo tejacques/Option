@@ -44,18 +44,51 @@ public static FSharpOption<T> None
 Example Usage
 -------------
 
+### Using the value ###
+
 ```csharp
-public void Example()
+public void Example1()
 {
     Option<int> option = 1;
     
+    // Most Performant
+    int value;
+    if (option.TryGetValue(out value))
+    {
+        // Do something with the value
+        Console.WriteLine(value);
+    }
+    else
+    {
+        // Do something else
+    }
+}
+```
+
+```csharp
+public void Example2()
+{
+    Option<int> option = 1;
+    
+    // Second Most performant
     if (option.HasValue)
     {
         // Do something with the value
         Console.WriteLine(option.Value);
     }
+    else
+    {
+        // Do something else
+    }
+}
+```
+
+```csharp
+public void FunctionalExample1()
+{
+    Option<int> option = 1;
     
-    // Alternatively...
+    // Third most performant
     option.Match(
         None: () => { /* Do nothing */ }
         Some: value =>
@@ -63,22 +96,54 @@ public void Example()
             //Do something with the value
             Console.WriteLine(value);
         });
-    
-    var s = matchOptionExample(1); // s = "One"
 }
+```
 
-// More performant, but can't match on exact values
-public string matchOptionExample1(Option<int> option)
+``` csharp
+public void FunctionalExample2()
 {
-    return option.Match(
+    Option<int> option = 1;
+    
+    // Least performant but can match on values
+    option.Match()
+        .None(() => Console.WriteLine("No value"))
+        .Some(1, () => Console.WriteLine("One"))
+        .Some((value) => Console.WriteLine(value))
+        .Result();
+}
+```
+
+### Getting the value ###
+
+```csharp
+public void GetExample()
+{
+    Option<int> option = 1;
+    
+    // Getting the value out
+    var v = option.ValueOrDefault;
+    var v2 = option.ValueOr(0);
+    var v3 = option.ValueOr(() => 0);
+}
+```
+
+```csharp
+public void FunctionalGetExample1()
+{
+    Option<int> option = 1;
+    
+    // More performant, but can't match on exact values
+    var match1 = option.Match(
         None: () => "No value"
         Some: (value) => value.ToString());
 }
+```
 
-// Less performant but can match on values
-public string matchOptionExample2(Option<int> option)
+```csharp
+public void FunctionalGetExample2()
 {
-    return option.Match<string>()
+    // Less performant but can match on values
+    var match2 = option.Match<string>()
         .None(() => "No value")
         .Some(1, () => "One")
         .Some((value) => value.ToString())
