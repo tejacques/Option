@@ -18,6 +18,7 @@ namespace Functional.Option
         private Dictionary<T, Action> _matchedValues;
         private Action<T> _matchedSome;
         private Action _matchedNone;
+        private bool _matched;
 
         /// <summary>
         /// Creates a new OptionPatternMatcher.
@@ -114,7 +115,7 @@ namespace Functional.Option
         /// </summary>
         public void Result()
         {
-            Result(this._option);
+            Result(this._option, false);
         }
 
         /// <summary>
@@ -123,17 +124,34 @@ namespace Functional.Option
         /// <param name="option">The option to match on.</param>
         public void Result(Option<T> option)
         {
-            if (option.HasValue)
+            Result(option, false);
+        }
+
+        private void Result(Option<T> option, bool fromInternal)
+        {
+            if (fromInternal && this._matched)
+            {
+                // Do nothing
+            }
+            else if (option.HasValue)
             {
                 T value = option.Value;
                 Action action;
                 if (null != this._matchedValues
                     && this._matchedValues.TryGetValue(value, out action))
                 {
+                    if (fromInternal)
+                    {
+                        this._matched = true;
+                    }
                     action();
                 }
                 else if (null != this._matchedSome)
                 {
+                    if (fromInternal)
+                    {
+                        this._matched = true;
+                    }
                     this._matchedSome(value);
                 }
             }
@@ -146,6 +164,39 @@ namespace Functional.Option
             }
         }
         #endregion
+
+        #region Operator Overloads
+        /// <summary>
+        /// Functional style of passing lambdas to the pattern matcher.
+        /// </summary>
+        /// <param name="pm">The pattern matcher.</param>
+        /// <param name="None">
+        /// The action to take if the result is none.</param>
+        /// <returns>The pattern matcher.</returns>
+        public static OptionPatternMatcher<T> operator |(OptionPatternMatcher<T> pm, Action None)
+        {
+            pm = pm.None(None);
+            pm.Result(pm._option, true);
+
+            return pm;
+        }
+
+        /// <summary>
+        /// Functional style of passing lambdas to the pattern matcher.
+        /// </summary>
+        /// <param name="pm">The pattern matcher.</param>
+        /// <param name="Some">
+        /// The action to take if the result is some.</param>
+        /// <returns>The pattern matcher.</returns>
+        public static OptionPatternMatcher<T> operator |(OptionPatternMatcher<T> pm, Action<T> Some)
+        {
+            pm = pm.Some(Some);
+            pm.Result(pm._option, true);
+
+            return pm;
+        }
+        #endregion
+
     }
 
     /// <summary>
@@ -332,6 +383,48 @@ namespace Functional.Option
             }
 
             return result;
+        }
+        #endregion
+
+        #region Operator Overloads
+        /// <summary>
+        /// Functional style of passing lambdas to the pattern matcher.
+        /// </summary>
+        /// <param name="pm">The pattern matcher.</param>
+        /// <param name="None">
+        /// The result to return if the result is none.</param>
+        /// <returns>The pattern matcher.</returns>
+        public static OptionPatternMatcher<TIn, TOut> operator |(
+            OptionPatternMatcher<TIn, TOut> pm,
+            Func<TOut> None)
+        {
+            return pm.None(None);
+        }
+
+        /// <summary>
+        /// Functional style of passing lambdas to the pattern matcher.
+        /// </summary>
+        /// <param name="pm">The pattern matcher.</param>
+        /// <param name="Some">
+        /// The result to return if the result is some.</param>
+        /// <returns>The pattern matcher.</returns>
+        public static OptionPatternMatcher<TIn, TOut> operator |(
+            OptionPatternMatcher<TIn, TOut> pm, Func<TIn, TOut> Some)
+        {
+            return pm.Some(Some);
+        }
+
+        /// <summary>
+        /// Implicitly converts an OptionPatternMatcher to a TOut.
+        /// </summary>
+        /// <param name="pm">The pattern matcher.</param>
+        /// <returns>
+        /// The TOut obtained by running pm.Result()
+        /// </returns>
+        public static implicit operator TOut(
+            OptionPatternMatcher<TIn, TOut> pm)
+        {
+            return pm.Result();
         }
         #endregion
     }

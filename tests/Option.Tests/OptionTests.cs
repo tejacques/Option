@@ -257,6 +257,24 @@ namespace Tests
 
             Assert.AreEqual(true, o1.HasValue);
             Assert.AreEqual(false, o2.HasValue);
+
+            int ran = 0;
+            Option<int> o = 1;
+            var matcher = o.Match()
+                | ((i) => { ran++; })
+                | (() => { ran++; });
+
+            Assert.AreEqual(1, ran);
+
+            Func<string> m = () => o.Match<string>()
+                //| (1, () => "One") // Not possible yet
+                | ((i) => i.ToString())
+                | (() => "None");
+
+            Assert.AreEqual("1", m());
+
+            Option<int> a = ((int?)1).ToOption();
+
         }
 
         [Test]
