@@ -346,6 +346,9 @@ namespace Tests
             where = o.Where((x, index) => true);
             Assert.AreEqual(o.HasValue ? 1 : 0, where.Count());
 
+            var toArr = o.ToArray();
+            Assert.AreEqual(o.HasValue ? 1 : 0, toArr.Length);
+
 
             if (o.HasValue)
             {

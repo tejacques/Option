@@ -291,6 +291,24 @@ namespace Functional.Option
         #region LINQ
 
         /// <summary>
+        /// Copies the elements of the Option to a new array.
+        /// </summary>
+        /// <returns>
+        /// An array containing the elements of the Option.
+        /// </returns>
+        public T[] ToArray()
+        {
+            if (this._hasValue)
+            {
+                return new T[] { this._value };
+            }
+            else
+            {
+                return EmptyArray<T>.Array;
+            }
+        }
+
+        /// <summary>
         /// Performs the specified action on the value of the Option
         /// if it holds a value.
         /// </summary>
@@ -316,19 +334,18 @@ namespace Functional.Option
         /// the index of the source element.
         /// </param>
         /// <returns>
-        /// A T[] whose elements are the result of invoking
+        /// An Option&lt;TResult&gt; whose elements are the result of invoking
         /// the transform function on each element of source.
         /// </returns>
-        public TResult[] Select<TResult>(Func<T, TResult> selector)
+        public Option<TResult> Select<TResult>(Func<T, TResult> selector)
         {
             if(this._hasValue)
             {
-                return new TResult[] { selector(this._value) };
-                //yield return selector(this._value);
+                return selector(this._value);
             }
             else
             {
-                return EmptyArray<TResult>.Array;
+                return Option.None;
             }
         }
 
@@ -342,10 +359,10 @@ namespace Functional.Option
         /// A transform function to apply to each element.
         /// </param>
         /// <returns>
-        /// A T[] whose elements are the result of invoking
+        /// An Option&lt;TResult&gt; whose elements are the result of invoking
         /// the transform function on each element of source.
         /// </returns>
-        public TResult[] Select<TResult>(
+        public Option<TResult> Select<TResult>(
             Func<T, int, TResult> selector)
         {
             // Could have been the below line, but
@@ -355,11 +372,11 @@ namespace Functional.Option
 
             if (this._hasValue)
             {
-                return new TResult[] { selector(this._value, 0) };
+                return selector(this._value, 0);
             }
             else
             {
-                return EmptyArray<TResult>.Array;
+                return Option.None;
             }
         }
 
@@ -371,18 +388,18 @@ namespace Functional.Option
         /// of the function represents the index of the source element.
         /// </param>
         /// <returns>
-        /// A T[] that contains elements from the value from the
+        /// An Option&lt;T&gt; that contains elements from the value from the
         /// Option if it satisfies the condition.
         /// </returns>
-        public T[] Where(Func<T, bool> predicate)
+        public Option<T> Where(Func<T, bool> predicate)
         {
             if (this._hasValue && predicate(this._value))
             {
-                return new T[] { this._value };
+                return this;
             }
             else
             {
-                return EmptyArray<T>.Array;
+                return Option.None;
             }
         }
 
@@ -393,10 +410,10 @@ namespace Functional.Option
         /// A function to test the value of the Option.
         /// </param>
         /// <returns>
-        /// A T[] that contains elements from the value from the
+        /// An Option&lt;T&gt; that contains elements from the value from the
         /// Option if it satisfies the condition.
         /// </returns>
-        public T[] Where(Func<T, int, bool> predicate)
+        public Option<T> Where(Func<T, int, bool> predicate)
         {
             // Could have been the below line, but
             // the performance is substantially worse
@@ -405,11 +422,11 @@ namespace Functional.Option
 
             if (this._hasValue && predicate(this._value, 0))
             {
-                return new T[] { this._value };
+                return this;
             }
             else
             {
-                return EmptyArray<T>.Array;
+                return Option.None;
             }
         }
         #endregion

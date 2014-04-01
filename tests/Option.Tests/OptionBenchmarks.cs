@@ -38,15 +38,18 @@ namespace Tests
             BenchmarkEnumerateOption();
             BenchmarkEnumerableForEachOption();
             BenchmarkEnumerableSelectOption();
+            BenchmarkEnumerableWhereOption();
             BenchmarkEnumerableSelectManyOption();
             BenchmarkEnumerableFlattenOption();
 
             BenchmarkEnumerateArray();
             BenchmarkEnumerableSelectArray();
+            BenchmarkEnumerableWhereArray();
 
             BenchmarkEnumerateList();
             BenchmarkEnumerableForEachList();
             BenchmarkEnumerableSelectList();
+            BenchmarkEnumerableWhereList();
             loops = tmp;
         }
 
@@ -262,6 +265,17 @@ namespace Tests
         }
 
         [Test]
+        public void BenchmarkEnumerableWhereOption()
+        {
+            Option<int> o = 1;
+
+            for (int i = 0; i < loops; i++)
+            {
+                var s = o.Where(x => true);
+            }
+        }
+
+        [Test]
         public void BenchmarkEnumerableSelectManyOption()
         {
             Option<int>[] o = new Option<int>[] { 1 };
@@ -310,6 +324,17 @@ namespace Tests
         }
 
         [Test]
+        public void BenchmarkEnumerableWhereArray()
+        {
+            int[] arr = new int[] { 1 };
+
+            for (int i = 0; i < loops; i++)
+            {
+                var s = arr.Where(x => true);
+            }
+        }
+
+        [Test]
         public void BenchmarkEnumerateList()
         {
 
@@ -331,6 +356,7 @@ namespace Tests
         {
             int sum = 0;
             List<int> list = new List<int> { 1 };
+            list.ToArray();
 
             for (int i = 0; i < loops; i++)
             {
@@ -346,6 +372,17 @@ namespace Tests
             for (int i = 0; i < loops; i++)
             {
                 var s = list.Select(x => true);
+            }
+        }
+
+        [Test]
+        public void BenchmarkEnumerableWhereList()
+        {
+            List<int> list = new List<int> { 1 };
+
+            for (int i = 0; i < loops; i++)
+            {
+                var s = list.Where(x => true);
             }
         }
 
