@@ -202,6 +202,14 @@
             or both options are Option&lt;T&gt;.None.
             </returns>
         </member>
+        <member name="M:Functional.Option.Option`1.ToArray">
+            <summary>
+            Copies the elements of the Option to a new array.
+            </summary>
+            <returns>
+            An array containing the elements of the Option.
+            </returns>
+        </member>
         <member name="M:Functional.Option.Option`1.ForEach(System.Action{`0})">
             <summary>
             Performs the specified action on the value of the Option
@@ -225,7 +233,7 @@
             the index of the source element.
             </param>
             <returns>
-            A T[] whose elements are the result of invoking
+            An Option&lt;TResult&gt; whose elements are the result of invoking
             the transform function on each element of source.
             </returns>
         </member>
@@ -240,7 +248,7 @@
             A transform function to apply to each element.
             </param>
             <returns>
-            A T[] whose elements are the result of invoking
+            An Option&lt;TResult&gt; whose elements are the result of invoking
             the transform function on each element of source.
             </returns>
         </member>
@@ -253,7 +261,7 @@
             of the function represents the index of the source element.
             </param>
             <returns>
-            A T[] that contains elements from the value from the
+            An Option&lt;T&gt; that contains elements from the value from the
             Option if it satisfies the condition.
             </returns>
         </member>
@@ -265,7 +273,7 @@
             A function to test the value of the Option.
             </param>
             <returns>
-            A T[] that contains elements from the value from the
+            An Option&lt;T&gt; that contains elements from the value from the
             Option if it satisfies the condition.
             </returns>
         </member>
@@ -461,6 +469,24 @@
             </summary>
             <param name="option">The option to match on.</param>
         </member>
+        <member name="M:Functional.Option.OptionPatternMatcher`1.op_BitwiseOr(Functional.Option.OptionPatternMatcher{`0},System.Action)">
+            <summary>
+            Functional style of passing lambdas to the pattern matcher.
+            </summary>
+            <param name="pm">The pattern matcher.</param>
+            <param name="None">
+            The action to take if the result is none.</param>
+            <returns>The pattern matcher.</returns>
+        </member>
+        <member name="M:Functional.Option.OptionPatternMatcher`1.op_BitwiseOr(Functional.Option.OptionPatternMatcher{`0},System.Action{`0})">
+            <summary>
+            Functional style of passing lambdas to the pattern matcher.
+            </summary>
+            <param name="pm">The pattern matcher.</param>
+            <param name="Some">
+            The action to take if the result is some.</param>
+            <returns>The pattern matcher.</returns>
+        </member>
         <member name="T:Functional.Option.OptionPatternMatcher`2">
             <summary>
             A class to help with pattern matching on Option types.
@@ -549,6 +575,33 @@
             <returns>
             The result of running the func matching the option's value, or
             defaultValue if there was no match.
+            </returns>
+        </member>
+        <member name="M:Functional.Option.OptionPatternMatcher`2.op_BitwiseOr(Functional.Option.OptionPatternMatcher{`0,`1},System.Func{`1})">
+            <summary>
+            Functional style of passing lambdas to the pattern matcher.
+            </summary>
+            <param name="pm">The pattern matcher.</param>
+            <param name="None">
+            The result to return if the result is none.</param>
+            <returns>The pattern matcher.</returns>
+        </member>
+        <member name="M:Functional.Option.OptionPatternMatcher`2.op_BitwiseOr(Functional.Option.OptionPatternMatcher{`0,`1},System.Func{`0,`1})">
+            <summary>
+            Functional style of passing lambdas to the pattern matcher.
+            </summary>
+            <param name="pm">The pattern matcher.</param>
+            <param name="Some">
+            The result to return if the result is some.</param>
+            <returns>The pattern matcher.</returns>
+        </member>
+        <member name="M:Functional.Option.OptionPatternMatcher`2.op_Implicit(Functional.Option.OptionPatternMatcher{`0,`1})~`1">
+            <summary>
+            Implicitly converts an OptionPatternMatcher to a TOut.
+            </summary>
+            <param name="pm">The pattern matcher.</param>
+            <returns>
+            The TOut obtained by running pm.Result()
             </returns>
         </member>
     </members>
